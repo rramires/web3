@@ -1,0 +1,16 @@
+{
+  "name": "protocoin",
+  "version": "1.0.0",
+  "description": "Blockchain sample",
+  "main": "index.js",
+  "scripts": {
+    "test": "",
+    "compile": "npx tsc",
+    "start": "node ./dist/blockchain.js"
+  },
+  "author": "rramires",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
+}
