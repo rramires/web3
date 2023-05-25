@@ -1,6 +1,7 @@
-let v1:number = 0;
+import Block from "./block";
 
-function addValue(n:number):number {
-    return v1 += n;
-}
-console.log('n=', addValue(2));
+const block1:Block = new Block(1, "000aabbcc");
+//block1.index = 1;
+//block1.hash = "000aabbcc";
+
+console.log(block1, block1.isValid());
