@@ -4,7 +4,7 @@
   "description": "Blockchain sample",
   "main": "index.js",
   "scripts": {
-    "test": "",
+    "test": "jest",
     "dev": "npx nodemon ./src/lib/blockchain.ts --watch ./src -e ts",
     "compile": "npx tsc",
     "start": "node ./dist/lib/blockchain.js"
