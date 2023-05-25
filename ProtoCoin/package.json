@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "",
-    "dev": "npx nodemon ./src/blockchain.ts --watch ./src -e ts",
+    "dev": "npx nodemon ./src/lib/blockchain.ts --watch ./src -e ts",
     "compile": "npx tsc",
-    "start": "node ./dist/blockchain.js"
+    "start": "node ./dist/lib/blockchain.js"
   },
   "author": "rramires",
   "license": "MIT",
