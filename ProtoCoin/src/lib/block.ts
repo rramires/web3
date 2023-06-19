@@ -26,8 +26,16 @@ export default class Block{
     }
 
     /**
+     * Create the first block
+     * @returns {Block} - return genesis block
+     */
+    static genesis(): Block{
+       return new Block(0, "init", "genesis block");
+    }
+
+    /**
      * Generate and return the block hash
-     * @returns string - hash
+     * @returns {string} - hash
      */
     getHash():string {
         return SHA256(this.index +
@@ -38,14 +46,20 @@ export default class Block{
 
     /**
      * Validates the Block
+     * @param previousIndex number - last block index
+     * @param previousHash string - last block hash
      * @returns boolean - return if block is valid
      */
-    isValid(): boolean{
-        if(this.index < 0) return false; 
+    isValid(previousIndex: number, previousHash: string): boolean{
+        // checks if the index is the next value in the blockchain
+        if((this.index - 1) !== previousIndex) return false; 
+        // checks if the previous hash is the same as the last block
+        if(this.previousHash !== previousHash) return false;
+        // check hash with all current properties data
+        if(this.hash !== this.getHash()) return false;
+        // others simple checks
         if(this.timestamp < 1) return false; 
-        if(!this.previousHash) return false;
         if(!this.data) return false;
-        if(!this.hash) return false;
         return true;
     }
 }
