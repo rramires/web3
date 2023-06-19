@@ -16,7 +16,7 @@ export default class Blockchain {
         // initiate array with the genesis block
         this.chain = [Block.genesis()];
         this.nextIndex++;
-        // console.log('The blockchain starts with: ', this.chain);
+        console.log('The blockchain starts with: ', this.chain);
     }
 
     /**
@@ -40,6 +40,14 @@ export default class Blockchain {
         this.chain.push(block);
         this.nextIndex++;
         return new Validation();
+    }
+
+    /**
+     * Return block by hash
+     * @returns Block - return block
+     */
+    getBlock(hash: string): Block | undefined{
+        return this.chain.find(b => b.hash == hash);
     }
 
     /**

@@ -34,6 +34,14 @@ describe("Blockchain tests", () => {
         expect(validation.success).toEqual(false);
     })
 
+    test("Should get block", () =>{
+        const blockchain = new Blockchain();
+        // add block
+        const block = blockchain.getBlock(blockchain.chain[0].hash)
+        // test
+        expect(block).toBeTruthy();
+    })
+
     test("Should be valid (two blocks)", () =>{
         const blockchain = new Blockchain();
         // add block
