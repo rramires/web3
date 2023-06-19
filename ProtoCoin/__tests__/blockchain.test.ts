@@ -1,5 +1,6 @@
 import Block from "../src/lib/block";
 import Blockchain from "../src/lib/blockchain";
+import Validation from "../src/lib/validation";
 
 describe("Blockchain tests", () => {
 
@@ -12,25 +13,25 @@ describe("Blockchain tests", () => {
     test("Should be valid (only genesis)", () =>{
         const blockchain = new Blockchain();
         // test
-        expect(blockchain.isValid()).toEqual(true);
+        expect(blockchain.isValid().success).toEqual(true);
     }) 
 
     test("Should add block", () =>{
         const blockchain = new Blockchain();
         // add block
         const block: Block = new Block(1, blockchain.chain[0].hash, "Block 2");
-        const result: boolean = blockchain.addBlock(block);
+        const validation: Validation = blockchain.addBlock(block);
         // test
-        expect(result).toEqual(true);
+        expect(validation.success).toEqual(true);
     })
 
     test("Should NOT add block", () =>{
         const blockchain = new Blockchain();
         // add INVALID block
         const block: Block = new Block(-1, "invalidHash", "Block 2");
-        const result: boolean = blockchain.addBlock(block);
+        const validation: Validation = blockchain.addBlock(block);
         // test
-        expect(result).toEqual(false);
+        expect(validation.success).toEqual(false);
     })
 
     test("Should be valid (two blocks)", () =>{
@@ -39,7 +40,7 @@ describe("Blockchain tests", () => {
         const block: Block = new Block(1, blockchain.chain[0].hash, "Block 2");
         blockchain.addBlock(block);
         // test
-        expect(blockchain.isValid()).toEqual(true);
+        expect(blockchain.isValid().success).toEqual(true);
     })    
 
     test("Should be INVALID (two blocks)", () =>{
@@ -49,6 +50,6 @@ describe("Blockchain tests", () => {
         blockchain.addBlock(block);
         blockchain.chain[1].data = "adulterated data..."; // invalidate data
         // test
-        expect(blockchain.isValid()).toEqual(false);
+        expect(blockchain.isValid().success).toEqual(false);
     })
 });

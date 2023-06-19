@@ -1,4 +1,5 @@
 import { SHA256 } from "crypto-js";
+import Validation from "./validation";
 
 /**
  * Block class
@@ -27,7 +28,7 @@ export default class Block{
 
     /**
      * Create the first block
-     * @returns {Block} - return genesis block
+     * @returns Block - return genesis block
      */
     static genesis(): Block{
        return new Block(0, "init", "genesis block");
@@ -35,7 +36,7 @@ export default class Block{
 
     /**
      * Generate and return the block hash
-     * @returns {string} - hash
+     * @returns string - hash
      */
     getHash():string {
         return SHA256(this.index +
@@ -48,18 +49,18 @@ export default class Block{
      * Validates the Block
      * @param previousIndex number - last block index
      * @param previousHash string - last block hash
-     * @returns boolean - return if block is valid
+     * @returns Validation - return if block is valid
      */
-    isValid(previousIndex: number, previousHash: string): boolean{
+    isValid(previousIndex: number, previousHash: string): Validation{
         // checks if the index is the next value in the blockchain
-        if((this.index - 1) !== previousIndex) return false; 
+        if((this.index - 1) !== previousIndex) return new Validation(false, "Invalid index."); 
         // checks if the previous hash is the same as the last block
-        if(this.previousHash !== previousHash) return false;
+        if(this.previousHash !== previousHash) return new Validation(false, "Invalid previous hash."); 
         // check hash with all current properties data
-        if(this.hash !== this.getHash()) return false;
+        if(this.hash !== this.getHash()) return new Validation(false, "Invalid hash."); 
         // others simple checks
-        if(this.timestamp < 1) return false; 
-        if(!this.data) return false;
-        return true;
+        if(this.timestamp < 0) return new Validation(false, "Invalid timestamp.");
+        if(!this.data) return new Validation(false, "Invalid/empty data.");
+        return new Validation();
     }
 }
