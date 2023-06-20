@@ -1,6 +1,7 @@
 import express  from "express";
 import morgan from "morgan";
 import Blockchain from "../lib/blockchain";
+import Block from "../lib/block";
 
 const PORT: number = 3000;
 
@@ -19,11 +20,13 @@ app.use(express.json());
 const blockchain = new Blockchain();
 
 
-/**
+/****************
  * Routes
- */
+ ****************/ 
 
-// return status
+/**
+ * Return status
+ */
 app.get('/status', (req, res, next) =>{
     res.json({
         length: blockchain.chain.length,
@@ -32,7 +35,9 @@ app.get('/status', (req, res, next) =>{
     })
 })
 
-// return block by index or hash
+/**
+ * Return block by index or hash
+ */
 app.get('/blocks/:indexOrHash', (req, res, next) =>{
     let block;
     // verify if is number
@@ -48,13 +53,35 @@ app.get('/blocks/:indexOrHash', (req, res, next) =>{
         // get by hash
         block = blockchain.getBlock(req.params.indexOrHash);
         // skip
-        if(!block) return res.sendStatus(404);
+        if(!block) return res.sendStatus(404); // Not Found
         // res
         res.json(block);
     }
 })
 
+/**
+ * Add block
+ */
+app.post('/blocks', (req, res, next) =>{
+    // skip
+    if(req.body.index === undefined || 
+       req.body.previousHash === undefined|| 
+       req.body.data === undefined) return res.sendStatus(422) // Unprocessable Content 
+    // add block
+    const block: Block = new Block(req.body.index, 
+                                   req.body.previousHash, 
+                                   req.body.data);
+    const validation = blockchain.addBlock(block);
+    // skip
+    if(!validation.success){
+        res.status(400).json(validation);
+    }
+    else{
+        res.status(201).json(block);
+    }
+})
 
+//
 // server start
 app.listen(PORT, () =>{
     console.log(`Protocoin is running at ${PORT} port`);
