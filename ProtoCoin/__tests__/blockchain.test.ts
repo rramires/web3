@@ -2,6 +2,10 @@ import Block from "../src/lib/block";
 import Blockchain from "../src/lib/blockchain";
 import Validation from "../src/lib/validation";
 
+// mocks
+jest.mock('../src/lib/block');
+
+
 describe("Blockchain tests", () => {
 
     test("Should has genesis block", () =>{
@@ -56,7 +60,7 @@ describe("Blockchain tests", () => {
         // add block
         const block: Block = new Block(1, blockchain.chain[0].hash, "Block 2");
         blockchain.addBlock(block);
-        blockchain.chain[1].data = "adulterated data..."; // invalidate data
+        blockchain.chain[1].index = -1; // invalidate data
         // test
         expect(blockchain.isValid().success).toEqual(false);
     })
