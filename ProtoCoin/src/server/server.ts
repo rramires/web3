@@ -43,7 +43,7 @@ app.get('/blocks/:indexOrHash', (req, res, next) =>{
         // get by index
         block = blockchain.chain[parseInt(req.params.indexOrHash)];
         // skip
-        if(!block) return res.sendStatus(404);
+        if(!block) return res.sendStatus(404); // Not Found
         // res
         res.json(block);
     }

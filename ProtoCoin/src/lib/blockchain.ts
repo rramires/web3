@@ -47,7 +47,7 @@ export default class Blockchain {
      * @returns Block - return block
      */
     getBlock(hash: string): Block | undefined{
-        return this.chain.find(b => b.hash == hash);
+        return this.chain.find(b => b.hash === hash);
     }
 
     /**

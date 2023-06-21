@@ -1,5 +1,6 @@
 import request from "supertest";
 import { app } from "../src/server/server";
+import Block from "../src/lib/block";
 
 // mocks
 jest.mock('../src/lib/block');
@@ -7,8 +8,7 @@ jest.mock('../src/lib/blockchain');
 
 describe("Blockchain Server Tests", () => {
 
-
-    test("GET /status", async () =>{
+    test("GET /status - Should return status", async () =>{
         const response = await request(app)
                                 .get('/status/');
 
@@ -16,5 +16,66 @@ describe("Blockchain Server Tests", () => {
         expect(response.body.isValid.success).toEqual(true);
     })
 
-    
+    test("GET /blocks/:indexOrHash - Should get block by index", async () =>{
+        const response = await request(app)
+                                .get('/blocks/0');
+
+        expect(response.status).toEqual(200);
+        expect(response.body.index).toEqual(0);
+    })
+
+    test("GET /blocks/:indexOrHash - Should get block by hash", async () =>{
+        const response = await request(app)
+                                .get('/blocks/mockHash');
+
+        expect(response.status).toEqual(200);
+        expect(response.body.index).toEqual(0);
+    })
+
+    test("GET /blocks/:indexOrHash - Should NOT get block by index", async () =>{
+        const response = await request(app)
+                                .get('/blocks/666'); // invalid index
+
+        expect(response.status).toEqual(404);
+    })
+
+    test("GET /blocks/:indexOrHash - Should NOT get block by hash", async () =>{
+        const response = await request(app)
+                                .get('/blocks/invalidHash'); // invalid hash
+
+        expect(response.status).toEqual(404);
+    })
+
+    test("POST /blocks/ - Should add a new block", async () =>{
+        //
+        const block: Block = new Block(1, "mockHash", "Block 1");
+
+        const response = await request(app)
+                                .post('/blocks/')
+                                .send(block);
+
+        expect(response.status).toEqual(201);
+        expect(response.body.index).toEqual(1);
+    })
+
+    test("POST /blocks/ - Should NOT add a new block(400)", async () =>{
+        //
+        const block: Block = new Block(-1, // invalid index
+                                       "mockHash", "Block 1");
+
+        const response = await request(app)
+                                .post('/blocks/')
+                                .send(block);
+
+        expect(response.status).toEqual(400);
+    })
+
+    test("POST /blocks/ - Should NOT add a new block(422)", async () =>{
+        
+        const response = await request(app)
+                                .post('/blocks/')
+                                .send({});
+
+        expect(response.status).toEqual(422);
+    })
 })

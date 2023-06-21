@@ -31,7 +31,7 @@ export default class Blockchain {
      */
     addBlock(block: Block): Validation{
         // fake error
-        if(block.index < 0) new Validation(false, "Invalid blockchain mock");
+        if(block.index < 0) return new Validation(false, "Invalid blockchain mock");
         // add
         this.chain.push(block);
         this.nextIndex++;
@@ -43,7 +43,7 @@ export default class Blockchain {
      * @returns Block - return block
      */
     getBlock(hash: string): Block | undefined{
-        return this.chain.find(b => b.hash == hash);
+        return this.chain.find(b => b.hash === hash);
     }
 
     /**

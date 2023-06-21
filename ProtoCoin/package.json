@@ -8,7 +8,7 @@
     "dev": "npx nodemon ./src/lib/blockchain.ts --watch ./src -e ts",
     "compile": "npx tsc",
     "start": "node ./dist/lib/blockchain.js",
-    "app": "ts-node ./src/server/app.ts"
+    "app": "ts-node ./src/app.ts"
   },
   "author": "rramires",
   "license": "MIT",
