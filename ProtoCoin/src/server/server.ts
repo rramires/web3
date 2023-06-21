@@ -3,8 +3,6 @@ import morgan from "morgan";
 import Blockchain from "../lib/blockchain";
 import Block from "../lib/block";
 
-const PORT: number = 3000;
-
 /**
  * Express Server
  */
@@ -82,7 +80,6 @@ app.post('/blocks', (req, res, next) =>{
 })
 
 //
-// server start
-app.listen(PORT, () =>{
-    console.log(`Protocoin is running at ${PORT} port`);
-});
+export {
+    app
+}
