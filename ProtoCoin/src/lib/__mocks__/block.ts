@@ -6,6 +6,8 @@ import Validation from "../validation";
 export default class Block{
     index: number;
     timestamp: number;
+    nonce: number;
+    miner: string;
     hash: string;
     previousHash: string;
     data: string;
@@ -19,6 +21,8 @@ export default class Block{
     constructor(index: number, previousHash: string, data: string){
         this.index = index;
         this.timestamp = Date.now();
+        this.nonce = 0;
+        this.miner = "";
         this.previousHash = previousHash;
         this.data = data;
         // set block hash

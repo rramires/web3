@@ -8,6 +8,8 @@ export default class Blockchain {
     //
     chain: Block[];
     nextIndex: number = 0;
+    //
+    static readonly DIFFICULTY_FACTOR: number = 5;
 
     /**
      * Creates a new Blockchain
@@ -27,6 +29,10 @@ export default class Blockchain {
         return this.chain[this.chain.length -1];
     }
 
+    getDifficulty(): number{
+        return Math.ceil(this.chain.length / Blockchain.DIFFICULTY_FACTOR);
+    }
+
     /**
      * Add block on chain
      */
@@ -34,7 +40,7 @@ export default class Blockchain {
         // 
         const lastBlock = this.getLastBlock();
         // verify
-        const validation = block.isValid(lastBlock.index, lastBlock.hash)
+        const validation = block.isValid(lastBlock.index, lastBlock.hash, this.getDifficulty())
         if(!validation.success) return new Validation(false, `Invalid block: ${validation.message}`);
         // add
         this.chain.push(block);
@@ -60,7 +66,7 @@ export default class Blockchain {
             const currentBlock = this.chain[i];
             const previousBlock = this.chain[i - 1];
             // compare the current with the previous
-            const validation: Validation = currentBlock.isValid(previousBlock.index, previousBlock.hash)
+            const validation: Validation = currentBlock.isValid(previousBlock.index, previousBlock.hash, this.getDifficulty())
             // returns block number and error message found
             if(!validation.success) return new Validation(false, `Block No ${currentBlock.index}: ${validation.message}`);
         }   
