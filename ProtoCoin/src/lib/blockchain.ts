@@ -5,7 +5,26 @@ import Validation from "./validation";
  * Blockchain class
  */
 export default class Blockchain {
-    //
+
+    // messages
+
+    /** Block added. */
+    static BLOCK_ADDED: Validation = new Validation(true, "Block added.");
+
+    /** Valid blockchain. */
+    static VALID_BLOCKCHAIN: Validation = new Validation(true, "Valid blockchain.");
+
+    /** Invalid block {msg} */
+    static INVALID_BLOCK(msg: string): Validation{
+        return new Validation(false, `Invalid block: ${msg}`);
+    }
+
+    /** Invalid block No {X}: {msg} */
+    static INVALID_BLOCK_NO(no: number, msg: string): Validation{
+        return new Validation(false, `Block No ${no}: ${msg}`);
+    }
+
+    // props
     chain: Block[];
     nextIndex: number = 0;
     //
@@ -18,7 +37,7 @@ export default class Blockchain {
         // initiate array with the genesis block
         this.chain = [Block.genesis()];
         this.nextIndex++;
-        console.log('The blockchain starts with: ', this.chain);
+        //console.log('The blockchain starts with: ', this.chain);
     }
 
     /**
@@ -41,11 +60,11 @@ export default class Blockchain {
         const lastBlock = this.getLastBlock();
         // verify
         const validation = block.isValid(lastBlock.index, lastBlock.hash, this.getDifficulty())
-        if(!validation.success) return new Validation(false, `Invalid block: ${validation.message}`);
+        if(!validation.success) return Blockchain.INVALID_BLOCK(validation.message);
         // add
         this.chain.push(block);
         this.nextIndex++;
-        return new Validation();
+        return Blockchain.BLOCK_ADDED;
     }
 
     /**
@@ -68,8 +87,8 @@ export default class Blockchain {
             // compare the current with the previous
             const validation: Validation = currentBlock.isValid(previousBlock.index, previousBlock.hash, this.getDifficulty())
             // returns block number and error message found
-            if(!validation.success) return new Validation(false, `Block No ${currentBlock.index}: ${validation.message}`);
+            if(!validation.success) return Blockchain.INVALID_BLOCK_NO(currentBlock.index, validation.message);
         }   
-        return new Validation();
+        return Blockchain.VALID_BLOCKCHAIN;
     }
 }

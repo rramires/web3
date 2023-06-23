@@ -108,6 +108,7 @@
   },
   "exclude": [
     "__tests__",
+    "**/__mocks__/*",
     "jest.config.ts"
   ],
   "ts-node": {

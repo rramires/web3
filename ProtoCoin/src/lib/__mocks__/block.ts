@@ -4,6 +4,14 @@ import Validation from "../validation";
  * Block class
  */
 export default class Block{
+
+    /** Valid block. */
+    static VALID_BLOCK: Validation = new Validation(true, "Valid block.");
+
+    /** Invalid block. */
+    static INVALID_BLOCK: Validation = new Validation(false, "Invalid block.");
+
+
     index: number;
     timestamp: number;
     nonce: number;
@@ -53,7 +61,8 @@ export default class Block{
      */
     isValid(previousIndex: number, previousHash: string): Validation{
         // simple validation mock
-        if( this.index < 0 || previousIndex < 0 || !previousHash) return new Validation(false, "Invalid mock block."); 
-        return new Validation();
+        if(this.index < 0 || previousIndex < 0 || !previousHash) return Block.INVALID_BLOCK; 
+        // esle
+        return Block.VALID_BLOCK;
     }
 }

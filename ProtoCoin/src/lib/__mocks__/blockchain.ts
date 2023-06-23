@@ -1,10 +1,18 @@
 import Block from "./block";
 import Validation from "../validation";
 
+
 /**
  * Mocked Blockchain class
  */
 export default class Blockchain {
+
+    /** Block added. */
+    static BLOCK_ADDED: Validation = new Validation(true, "Block added.");
+
+    /** Valid blockchain. */
+    static VALID_BLOCKCHAIN: Validation = new Validation(true, "Valid blockchain.");
+    
     //
     chain: Block[];
     nextIndex: number = 0;
@@ -31,11 +39,11 @@ export default class Blockchain {
      */
     addBlock(block: Block): Validation{
         // fake error
-        if(block.index < 0) return new Validation(false, "Invalid blockchain mock");
+        if(block.index < 0) return Block.INVALID_BLOCK;
         // add
         this.chain.push(block);
         this.nextIndex++;
-        return new Validation();
+        return Blockchain.BLOCK_ADDED;
     }
 
     /**
@@ -52,6 +60,6 @@ export default class Blockchain {
      */
     isValid(): Validation{
         // always valid
-        return new Validation();
+        return Blockchain.VALID_BLOCKCHAIN;
     }
 }

@@ -5,6 +5,34 @@ import Validation from "./validation";
  * Block class
  */
 export default class Block{
+
+    // messages
+
+    /** Valid block. */
+    static VALID_BLOCK: Validation = new Validation(true, "Valid block.");
+
+    /** Invalid block. */
+    static INVALID_BLOCK: Validation = new Validation(false, "Invalid block.");
+
+    /** Invalid timestamp */
+    static INVALID_TIMESTAMP: Validation = new Validation(false, "Invalid timestamp.");
+
+    /** Invalid data */
+    static INVALID_DATA: Validation = new Validation(false, "Invalid data.");
+
+    /** No mined */
+    static NO_MINED: Validation = new Validation(false, "No mined.");
+
+    /** Invalid index */
+    static INVALID_INDEX: Validation = new Validation(false, "Invalid index."); 
+
+    /** Invalid previous hash */
+    static INVALID_PREV_HASH: Validation = new Validation(false, "Invalid previous hash."); 
+
+    /** Invalid hash */
+    static INVALID_HASH: Validation = new Validation(false, "Invalid hash."); 
+
+    // props
     index: number;
     timestamp: number;
     nonce: number;
@@ -36,7 +64,9 @@ export default class Block{
      * @returns Block - return genesis block
      */
     static genesis(): Block{
-       return new Block(0, "init", "genesis block");
+        const block = new Block(0, "init", "genesis block");
+        block.mine(1, "init");
+        return block;
     }
 
     /**
@@ -92,19 +122,21 @@ export default class Block{
      */
     isValid(previousIndex: number, previousHash: string, difficulty: number): Validation{
         // simple checks
-        if(this.timestamp < 0) return new Validation(false, "Invalid timestamp.");
-        if(!this.data) return new Validation(false, "Invalid/empty data.");
-        if(!this.nonce || !this.miner) return new Validation(false, "No mined.");
+        if(this.timestamp < 0) return Block.INVALID_TIMESTAMP;
+        if(!this.data) return Block.INVALID_DATA;
+        if(!this.nonce || !this.miner) return Block.NO_MINED;
         //
         // checks if the index is the next value in the blockchain
-        if((this.index - 1) !== previousIndex) return new Validation(false, "Invalid index."); 
+        if((this.index - 1) !== previousIndex) return Block.INVALID_INDEX;
         //
         // checks if the previous hash is the same as the last block
-        if(this.previousHash !== previousHash) return new Validation(false, "Invalid previous hash."); 
+        if(this.previousHash !== previousHash) return Block.INVALID_PREV_HASH;
         //
         // check the hash with the current properties and zeros in the prefix
         const prefix = this.getPrefix(difficulty)
-        if(this.hash !== this.getHash() || !this.hash.startsWith(prefix)) return new Validation(false, "Invalid hash."); 
-        return new Validation();
+        if(this.hash !== this.getHash() || !this.hash.startsWith(prefix)) return Block.INVALID_HASH;
+        //
+        // else - success
+        return Block.VALID_BLOCK;
     }
 }

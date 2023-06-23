@@ -65,10 +65,15 @@ app.post('/blocks', (req, res, next) =>{
     if(req.body.index === undefined || 
        req.body.previousHash === undefined|| 
        req.body.data === undefined) return res.sendStatus(422) // Unprocessable Content 
+
+       console.log('body:', req.body);
     // add block
     const block: Block = new Block(req.body.index, 
                                    req.body.previousHash, 
                                    req.body.data);
+    // fake mine
+    block.mine(1, "fakeMiner");
+    
     const validation = blockchain.addBlock(block);
     // skip
     if(!validation.success){
