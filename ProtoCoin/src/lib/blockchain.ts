@@ -2,6 +2,18 @@ import Block from "./block";
 import Validation from "./validation";
 
 /**
+ * The BlockInfo interface
+ */
+export default interface BlockInfo {
+    nextIndex: number;
+    previousHash: string;
+    difficulty: number;
+    maxDifficulty: number;
+    feePerTx: number;
+    data: string;
+}
+
+/**
  * Blockchain class
  */
 export default class Blockchain {
@@ -29,6 +41,8 @@ export default class Blockchain {
     nextIndex: number = 0;
     //
     static readonly DIFFICULTY_FACTOR: number = 5;
+    static readonly MAX_DIFFICULTY: number = 62;
+
 
     /**
      * Creates a new Blockchain
@@ -85,10 +99,31 @@ export default class Blockchain {
             const currentBlock = this.chain[i];
             const previousBlock = this.chain[i - 1];
             // compare the current with the previous
-            const validation: Validation = currentBlock.isValid(previousBlock.index, previousBlock.hash, this.getDifficulty())
+            const validation: Validation = currentBlock.isValid(previousBlock.index, previousBlock.hash, this.getDifficulty());
             // returns block number and error message found
             if(!validation.success) return Blockchain.INVALID_BLOCK_NO(currentBlock.index, validation.message);
         }   
         return Blockchain.VALID_BLOCKCHAIN;
+    }
+
+    getFeePerTx(): number{
+        return 1;
+    }
+
+    getNextBlock(): BlockInfo{
+        const nextIndex = this.chain.length;
+        const previousHash = this.getLastBlock().hash;
+        const difficulty = this.getDifficulty();
+        const maxDifficulty = Blockchain.MAX_DIFFICULTY;
+        const feePerTx = this.getFeePerTx();
+        const data = new Date().toString();
+        return {
+            nextIndex,
+            previousHash,
+            difficulty,
+            maxDifficulty,
+            feePerTx,
+            data
+        } as BlockInfo
     }
 }

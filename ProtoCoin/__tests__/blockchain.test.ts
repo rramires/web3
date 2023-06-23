@@ -1,6 +1,7 @@
 import Block from "../src/lib/block";
 import Blockchain from "../src/lib/blockchain";
 import Validation from "../src/lib/validation";
+import BlockInfo from "../src/lib/blockchain";
 
 // mocks
 jest.mock('../src/lib/block');
@@ -67,5 +68,14 @@ describe("Blockchain tests", () => {
         const validation: Validation = blockchain.isValid();
         // test
         expect(validation).toEqual(Blockchain.INVALID_BLOCK_NO(invalidIndex, Block.INVALID_BLOCK.message));
+    })
+
+    test("Should get next block info", () =>{
+        const blockchain = new Blockchain();
+        // get block
+        const blockInfo = blockchain.getNextBlock();
+        // test
+        expect(blockInfo).toBeTruthy();
+        expect(blockInfo.nextIndex).toEqual(1);
     })
 });

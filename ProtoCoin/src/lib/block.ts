@@ -89,7 +89,6 @@ export default class Block{
      * @returns string - prefix, eg: 0000
      */
     getPrefix(difficulty: number): string{
-        //return new Array(difficulty + 1).join("0");
         return '0'.repeat(difficulty);
     }
 
