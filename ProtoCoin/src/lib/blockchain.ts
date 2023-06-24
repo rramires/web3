@@ -1,17 +1,6 @@
 import Block from "./block";
 import Validation from "./validation";
-
-/**
- * The BlockInfo interface
- */
-export default interface BlockInfo {
-    nextIndex: number;
-    previousHash: string;
-    difficulty: number;
-    maxDifficulty: number;
-    feePerTx: number;
-    data: string;
-}
+import BlockInfo from "./blockInfo";
 
 /**
  * Blockchain class
@@ -63,7 +52,7 @@ export default class Blockchain {
     }
 
     getDifficulty(): number{
-        return Math.ceil(this.chain.length / Blockchain.DIFFICULTY_FACTOR);
+        return Math.ceil(this.chain.length / Blockchain.DIFFICULTY_FACTOR) + 1;
     }
 
     /**
@@ -116,7 +105,7 @@ export default class Blockchain {
         const difficulty = this.getDifficulty();
         const maxDifficulty = Blockchain.MAX_DIFFICULTY;
         const feePerTx = this.getFeePerTx();
-        const data = new Date().toString();
+        const data = new Date().toDateString();
         return {
             nextIndex,
             previousHash,

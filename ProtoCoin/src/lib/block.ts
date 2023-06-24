@@ -1,5 +1,6 @@
 import { SHA256 } from "crypto-js";
 import Validation from "./validation";
+import BlockInfo from "./blockInfo";
 
 /**
  * Block class
@@ -44,18 +45,15 @@ export default class Block{
 
     /**
      * Creates a new Block
-     * @param index number - the block index in blockchain
-     * @param previousHash string - the previous block hash
-     * @param data string - the block data 
+     * @param block - Block optional
      */
-    constructor(index: number, previousHash: string, data: string){
-        this.index = index;
-        this.timestamp = Date.now();
-        this.nonce = 0;
-        this.miner = "";
-        this.previousHash = previousHash;
-        this.data = data;
-        // set block hash
+    constructor(block?: Block){
+        this.index = block?.index || 0;
+        this.timestamp = block?.timestamp || Date.now();
+        this.nonce = block?.nonce || 0;
+        this.miner = block?.miner || "";
+        this.previousHash = block?.previousHash || "";
+        this.data = block?.data || "";
         this.hash = this.getHash();
     }
 
@@ -64,8 +62,21 @@ export default class Block{
      * @returns Block - return genesis block
      */
     static genesis(): Block{
-        const block = new Block(0, "init", "genesis block");
+        const block = new Block();
+        block.data = "It's the genesis block! ;-)"
         block.mine(1, "init");
+        return block;
+    }
+
+    /**
+     * Return block from blockinfo 
+     * @returns Block 
+     */
+    static getFromInfo(blockInfo: BlockInfo): Block{
+        const block = new Block();
+              block.index = blockInfo.nextIndex;
+              block.previousHash = blockInfo.previousHash;
+              block.data = blockInfo.data;
         return block;
     }
 

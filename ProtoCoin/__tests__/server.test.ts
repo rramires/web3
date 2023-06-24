@@ -16,6 +16,15 @@ describe("Blockchain Server Tests", () => {
         expect(response.body.isValid.success).toEqual(true);
     })
 
+
+    test("GET /blocks/next - Should get next block", async () =>{
+        const response = await request(app)
+                                .get('/blocks/next');
+
+        expect(response.status).toEqual(200);
+        expect(response.body.nextIndex).toEqual(1);
+    })
+
     test("GET /blocks/:indexOrHash - Should get block by index", async () =>{
         const response = await request(app)
                                 .get('/blocks/0');
@@ -48,7 +57,11 @@ describe("Blockchain Server Tests", () => {
 
     test("POST /blocks/ - Should add a new block", async () =>{
         //
-        const block: Block = new Block(1, "mockHash", "Block 1");
+        const block = new Block({
+                                index: 1,
+                                previousHash: "mockHash",
+                                data: "Block 1"
+                            } as Block);
 
         const response = await request(app)
                                 .post('/blocks/')
@@ -60,8 +73,11 @@ describe("Blockchain Server Tests", () => {
 
     test("POST /blocks/ - Should NOT add a new block(400)", async () =>{
         //
-        const block: Block = new Block(-1, // invalid index
-                                       "mockHash", "Block 1");
+        const block = new Block({
+                                index: -1, // invalid index
+                                previousHash: "mockHash",
+                                data: "Block 1"
+                            } as Block);
 
         const response = await request(app)
                                 .post('/blocks/')

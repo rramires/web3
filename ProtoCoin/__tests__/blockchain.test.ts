@@ -25,7 +25,11 @@ describe("Blockchain tests", () => {
     test("Should add block", () =>{
         const blockchain = new Blockchain();
         // add block
-        const block: Block = new Block(1, blockchain.chain[0].hash, "Block 2");
+        const block = new Block();
+        block.index = 1
+        block.previousHash = blockchain.chain[0].hash;
+        block.data = "Block 2";
+        //
         const validation: Validation = blockchain.addBlock(block);
         // test
         expect(validation).toEqual(Blockchain.BLOCK_ADDED);
@@ -34,7 +38,11 @@ describe("Blockchain tests", () => {
     test("Should NOT add block", () =>{
         const blockchain = new Blockchain();
         // add INVALID block
-        const block: Block = new Block(-1, "invalidHash", "Block 2");
+        const block = new Block();
+        block.index = -1; // invalid index
+        block.previousHash = "invalid";
+        block.data = "Block 2";
+        //
         const validation: Validation = blockchain.addBlock(block);
         // test
         expect(validation).toEqual(Blockchain.INVALID_BLOCK(Block.INVALID_BLOCK.message));
@@ -51,8 +59,13 @@ describe("Blockchain tests", () => {
     test("Should be valid (two blocks)", () =>{
         const blockchain = new Blockchain();
         // add block
-        const block: Block = new Block(1, blockchain.chain[0].hash, "Block 2");
+        const block = new Block();
+        block.index = 1
+        block.previousHash = blockchain.chain[0].hash;
+        block.data = "Block 2";
+        //
         blockchain.addBlock(block);
+        //
         const validation: Validation = blockchain.isValid();
         // test
         expect(validation).toEqual(Blockchain.VALID_BLOCKCHAIN);
@@ -62,9 +75,14 @@ describe("Blockchain tests", () => {
         const invalidIndex: number = -1
         const blockchain = new Blockchain();
         // add block
-        const block: Block = new Block(1, blockchain.chain[0].hash, "Block 2");
+        const block = new Block();
+        block.index = 1
+        block.previousHash = blockchain.chain[0].hash;
+        block.data = "Block 2";
+
         blockchain.addBlock(block);
         blockchain.chain[1].index = invalidIndex; // invalidate index
+        
         const validation: Validation = blockchain.isValid();
         // test
         expect(validation).toEqual(Blockchain.INVALID_BLOCK_NO(invalidIndex, Block.INVALID_BLOCK.message));

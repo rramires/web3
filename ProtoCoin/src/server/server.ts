@@ -34,6 +34,13 @@ app.get('/status', (req, res, next) =>{
 })
 
 /**
+ * Return next block info
+ */
+app.get('/blocks/next', (req, res, next) =>{
+    res.json(blockchain.getNextBlock());
+})
+
+/**
  * Return block by index or hash
  */
 app.get('/blocks/:indexOrHash', (req, res, next) =>{
@@ -65,14 +72,8 @@ app.post('/blocks', (req, res, next) =>{
     if(req.body.index === undefined || 
        req.body.previousHash === undefined|| 
        req.body.data === undefined) return res.sendStatus(422) // Unprocessable Content 
-
     // add block
-    const block: Block = new Block(req.body.index, 
-                                   req.body.previousHash, 
-                                   req.body.data);
-    // fake mine
-    //block.mine(1, "fakeMiner");
-    
+    const block = new Block(req.body as Block);
     const validation = blockchain.addBlock(block);
     // skip
     if(!validation.success){
