@@ -1,4 +1,5 @@
 import Block from "../src/lib/block";
+import BlockInfo from "../src/lib/blockInfo";
 import Validation from "../src/lib/validation";
 
 describe("Block tests", () => {
@@ -13,10 +14,9 @@ describe("Block tests", () => {
 
     test("Should be valid", () =>{
 
-        const block = new Block();
-        block.index = 1
-        block.previousHash = genesis.hash;
-        block.data = "fakeData";
+        const block = new Block({index: 1,
+                                 previousHash: genesis.hash,
+                                 data: "fakeData"} as Block); // this params test constructor
         block.mine(mockDifficulty, mockMiner);
 
         const valid: Validation = block.isValid(genesis.index, genesis.hash, mockDifficulty);
@@ -104,5 +104,22 @@ describe("Block tests", () => {
         const valid: Validation = block.isValid(genesis.index, genesis.hash, mockDifficulty);
         // test
         expect(valid).toEqual(Block.INVALID_HASH);
+    })
+
+    test("Should create from block info", () =>{
+
+        const block = Block.getFromInfo({
+            nextIndex: 1, 
+            previousHash: genesis.hash,
+            difficulty: mockDifficulty,
+            maxDifficulty: 62,
+            feePerTx: 1,
+            data: "fakeData"
+        } as BlockInfo)
+        block.mine(mockDifficulty, mockMiner);
+
+        const valid: Validation = block.isValid(genesis.index, genesis.hash, mockDifficulty);
+        // test
+        expect(valid).toEqual(Block.VALID_BLOCK);
     })
 });

@@ -1,13 +1,17 @@
+import dotenv from "dotenv";
+dotenv.config();
+//
 import axios from "axios";
 import Block from "../lib/block";
 import BlockInfo from "../lib/blockInfo";
 
-const BLOCKCHAIN_SERVER = 'http://localhost:3000/';
+const BLOCKCHAIN_SERVER = `${process.env.BLOCKCHAIN_SERVER}:${process.env.BLOCKCHAIN_PORT}/`;
 // mock miner wallet
 const minerWallet = {
     privateKey: "myPrivateKey",
-    publickKey: "myPublicKey",
+    publickKey: `${process.env.MINER_WALLET}`,
 }
+console.log("Logged as: " + minerWallet.publickKey);
 
 let totalMined = 0;
 
