@@ -1,6 +1,7 @@
 import Block from "./block";
 import Validation from "./validation";
 import BlockInfo from "./blockInfo";
+import Transaction from "./transaction";
 
 /**
  * Blockchain class
@@ -40,7 +41,7 @@ export default class Blockchain {
         // initiate array with the genesis block
         this.chain = [Block.genesis()];
         this.nextIndex++;
-        //console.log('The blockchain starts with: ', this.chain);
+        console.log('The blockchain starts with: ', this.chain);
     }
 
     /**
@@ -105,14 +106,14 @@ export default class Blockchain {
         const difficulty = this.getDifficulty();
         const maxDifficulty = Blockchain.MAX_DIFFICULTY;
         const feePerTx = this.getFeePerTx();
-        const data = new Date().toDateString();
+        const transactions = [new Transaction()];
         return {
             nextIndex,
             previousHash,
             difficulty,
             maxDifficulty,
             feePerTx,
-            data
+            transactions
         } as BlockInfo
     }
 }

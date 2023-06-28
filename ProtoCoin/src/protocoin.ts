@@ -7,5 +7,5 @@ const PORT: number = parseInt(`${process.env.BLOCKCHAIN_PORT}`);
 //
 // server start
 app.listen(PORT, () =>{
-    console.log(`Protocoin is running at ${PORT} port`);
+    console.log(`ProtoCoin is running at ${PORT} port`);
 });
