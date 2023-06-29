@@ -41,7 +41,7 @@ export default class Blockchain {
         // initiate array with the genesis block
         this.chain = [Block.genesis()];
         this.nextIndex++;
-        console.log('The blockchain starts with: ', this.chain);
+        //console.log('The blockchain starts with: ', this.chain);
     }
 
     /**

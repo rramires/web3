@@ -1,3 +1,4 @@
+import Transaction from "./transaction"; // mock
 import Validation from "../validation";
 
 /**
@@ -18,7 +19,7 @@ export default class Block{
     miner: string;
     hash: string;
     previousHash: string;
-    data: string;
+    transactions: Transaction[];
 
     /**
      * Creates a new Block
@@ -30,7 +31,7 @@ export default class Block{
         this.nonce = block?.nonce || 0;
         this.miner = block?.miner || "";
         this.previousHash = block?.previousHash || "";
-        this.data = block?.data || "";
+        this.transactions = block?.transactions || [] as Transaction[];
         this.hash = this.getHash();
     }
 
@@ -40,8 +41,8 @@ export default class Block{
      */
     static genesis(): Block{
         const block = new Block();
-        block.data = "It's the genesis block! ;-)"
-        //block.mine(1, "init");
+        block.transactions = [new Transaction()];
+        block.previousHash = "genesis";
         return block;
     }
 

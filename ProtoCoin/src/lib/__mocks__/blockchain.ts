@@ -1,7 +1,7 @@
-import Block from "./block";
+import Block from "./block"; // mock
+import Transaction from "./transaction"; // mock
 import Validation from "../validation";
 import BlockInfo from "../blockInfo";
-
 
 
 /**
@@ -76,7 +76,7 @@ export default class Blockchain {
             difficulty: 1,
             maxDifficulty: 62,
             feePerTx: this.getFeePerTx(),
-            data: new Date().toString()
+            transactions: [new Transaction()]
         } as BlockInfo
     }
 }

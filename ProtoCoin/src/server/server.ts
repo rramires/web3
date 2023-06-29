@@ -70,8 +70,8 @@ app.get('/blocks/:indexOrHash', (req, res, next) =>{
 app.post('/blocks', (req, res, next) =>{
     // skip
     if(req.body.index === undefined || 
-       req.body.previousHash === undefined|| 
-       req.body.data === undefined) return res.sendStatus(422) // Unprocessable Content 
+       req.body.previousHash === undefined || 
+       req.body.hash === undefined) return res.sendStatus(422) // Unprocessable Content 
     // add block
     const block = new Block(req.body as Block);
     const validation = blockchain.addBlock(block);

@@ -55,15 +55,23 @@ export default class Block{
      * @param block - Block optional
      */
     constructor(block?: Block){
+
+        console.log(block)
+        console.log(block?.transactions.length)
+        
+
         this.index = block?.index || 0;
         this.timestamp = block?.timestamp || Date.now();
         this.nonce = block?.nonce || 0;
         this.miner = block?.miner || "";
         this.previousHash = block?.previousHash || "";
+        this.transactions = block?.transactions as Transaction[];
+        /*
         // map converts each object passed as a parameter into a Transaction
-        this.transactions = block?.transactions ? 
-                            block?.transactions.map(tx => new Transaction(tx)) : 
-                            [] as Transaction[];
+        this.transactions = block?.transactions && block.transactions.length > 0 ? 
+                            block.transactions.map(tx => new Transaction(tx)) : 
+                            [] as Transaction[]; 
+        */            
         this.hash = this.getHash();
     }
 
@@ -170,8 +178,10 @@ export default class Block{
             // check if there are any invalid transactions
             const validations = this.transactions.map(tx => tx.isValid()); // check all tx and get validations array
             const errors = validations.filter(v => !v.success).map(v => v.message); // filter invalids
-            const errorsMessage = errors.reduce((prev, curr) => prev + curr); // concat errors
-            if (errors.length > 0) return Block.INVALID_TX_IN_BLOCK(errorsMessage);
+            if (errors.length > 0) {
+                const errorsMessage = errors.reduce((prev, curr) => prev + curr); // concat errors
+                return Block.INVALID_TX_IN_BLOCK(errorsMessage);
+            }
         }  
         //
         // else - success

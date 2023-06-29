@@ -1,10 +1,11 @@
 import Block from "../src/lib/block";
 import Blockchain from "../src/lib/blockchain";
 import Validation from "../src/lib/validation";
-import BlockInfo from "../src/lib/blockchain";
+import Transaction from "../src/lib/transaction";
 
 // mocks
 jest.mock('../src/lib/block');
+jest.mock('../src/lib/transaction');
 
 
 describe("Blockchain tests", () => {
@@ -28,7 +29,9 @@ describe("Blockchain tests", () => {
         const block = new Block();
         block.index = 1
         block.previousHash = blockchain.chain[0].hash;
-        block.data = "Block 2";
+        block.transactions = [new Transaction({
+                                    data: "Block 1"
+                                } as Transaction)];
         //
         const validation: Validation = blockchain.addBlock(block);
         // test
@@ -41,7 +44,9 @@ describe("Blockchain tests", () => {
         const block = new Block();
         block.index = -1; // invalid index
         block.previousHash = "invalid";
-        block.data = "Block 2";
+        block.transactions = [new Transaction({
+                                    data: "Block 1"
+                                } as Transaction)];
         //
         const validation: Validation = blockchain.addBlock(block);
         // test
@@ -62,7 +67,9 @@ describe("Blockchain tests", () => {
         const block = new Block();
         block.index = 1
         block.previousHash = blockchain.chain[0].hash;
-        block.data = "Block 2";
+        block.transactions = [new Transaction({
+                                    data: "Block 1"
+                                } as Transaction)];
         //
         blockchain.addBlock(block);
         //
@@ -78,7 +85,9 @@ describe("Blockchain tests", () => {
         const block = new Block();
         block.index = 1
         block.previousHash = blockchain.chain[0].hash;
-        block.data = "Block 2";
+        block.transactions = [new Transaction({
+                                    data: "Block 1"
+                                } as Transaction)];
 
         blockchain.addBlock(block);
         blockchain.chain[1].index = invalidIndex; // invalidate index
