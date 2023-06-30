@@ -1,7 +1,8 @@
-import express  from "express";
+import express, { Request, Response, NextFunction }  from "express";
 import morgan from "morgan";
 import Blockchain from "../lib/blockchain";
 import Block from "../lib/block";
+import Transaction from "../lib/transaction";
 
 /**
  * Express Server
@@ -25,7 +26,7 @@ const blockchain = new Blockchain();
 /**
  * Return status
  */
-app.get('/status', (req, res, next) =>{
+app.get('/status', (req: Request, res: Response, next:NextFunction) =>{
     res.json({
         length: blockchain.chain.length,
         isValid: blockchain.isValid(),
@@ -36,14 +37,14 @@ app.get('/status', (req, res, next) =>{
 /**
  * Return next block info
  */
-app.get('/blocks/next', (req, res, next) =>{
+app.get('/blocks/next', (req: Request, res: Response, next:NextFunction) =>{
     res.json(blockchain.getNextBlock());
 })
 
 /**
  * Return block by index or hash
  */
-app.get('/blocks/:indexOrHash', (req, res, next) =>{
+app.get('/blocks/:indexOrHash', (req: Request, res: Response, next:NextFunction) =>{
     let block;
     // verify if is number
     if(/^[0-9]+$/.test(req.params.indexOrHash)){
@@ -67,7 +68,7 @@ app.get('/blocks/:indexOrHash', (req, res, next) =>{
 /**
  * Add block
  */
-app.post('/blocks', (req, res, next) =>{
+app.post('/blocks', (req: Request, res: Response, next:NextFunction) =>{
     // skip
     if(req.body.index === undefined || 
        req.body.previousHash === undefined || 
@@ -81,6 +82,41 @@ app.post('/blocks', (req, res, next) =>{
     }
     else{
         res.status(201).json(block);
+    }
+})
+
+/**
+ * Get transactions - optional hash param
+ */
+app.get('/transactions/:hash?', (req: Request, res: Response, next:NextFunction) => {
+    // search by hash
+    if(req.params.hash){
+        res.json(blockchain.getTransaction(req.params.hash));
+    }
+    else{
+        // get next block transactions 
+        res.json({
+            next: blockchain.mempool.slice(0, Blockchain.TXS_PER_BLOCK),
+            total: blockchain.mempool.length
+        });
+    }
+})
+
+/**
+ * Add transaction
+ */
+app.post('/transactions', (req: Request, res: Response, next:NextFunction) => {
+    // skip
+    if (req.body.hash === undefined) return res.sendStatus(422);
+    // add block transaction
+    const tx = new Transaction(req.body as Transaction);
+    const validation = blockchain.addTransaction(tx);
+    // skip
+    if(!validation.success){
+        res.status(400).json(validation);
+    }
+    else{
+        res.status(201).json(tx);
     }
 })
 
