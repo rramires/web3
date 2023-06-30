@@ -2,6 +2,7 @@ import Block from "./block";
 import Validation from "./validation";
 import BlockInfo from "./blockInfo";
 import Transaction from "./transaction";
+import TransactionType from "./transactionType";
 
 /**
  * Blockchain class
@@ -26,12 +27,30 @@ export default class Blockchain {
         return new Validation(false, `Block No ${no}: ${msg}`);
     }
 
+    /** Invalid transactions length. */
+    static INVALID_TXS_LENGTH: Validation = new Validation(false, "Invalid transactions length.");
+
+    /** Invalid duplicate transaction. */
+    static INVALID_TX_DUPLICATED: Validation = new Validation(false, "Invalid duplicate transaction.");
+
+    /** Transaction added. */
+    static TRANSACTION_ADDED: Validation = new Validation(true, "Transaction added.");
+
+    /** Invalid transaction {msg} */
+    static INVALID_TRANSACTION(msg: string): Validation{
+        return new Validation(false, `Invalid transaction: ${msg}`);
+    }
+
     // props
     chain: Block[];
+    mempool: Transaction[];
     nextIndex: number = 0;
     //
-    static readonly DIFFICULTY_FACTOR: number = 5;
-    static readonly MAX_DIFFICULTY: number = 62;
+    // default values
+    static readonly DIFFICULTY_FACTOR: number = 5; // init difficulty
+    static readonly MAX_DIFFICULTY: number = 62; // max difficulty
+    static readonly TXS_PER_BLOCK: number = 2; // block size
+
 
 
     /**
@@ -41,6 +60,8 @@ export default class Blockchain {
         // initiate array with the genesis block
         this.chain = [Block.genesis()];
         this.nextIndex++;
+        // initiate empty mempool
+        this.mempool = [];
         //console.log('The blockchain starts with: ', this.chain);
     }
 
@@ -57,6 +78,28 @@ export default class Blockchain {
     }
 
     /**
+     * Add a transaction to the mempool
+     */
+    addTransaction(transaction: Transaction): Validation{
+        // verify
+        const validation = transaction.isValid();
+        if(!validation.success) return Blockchain.INVALID_TRANSACTION(validation.message);
+        //
+        // check if transaction exists
+        /* 
+            *** it gets really slow over time
+            // in blockchain - some block with some transaction with the same hash 
+            if(this.chain.some(b => b.transactions.some(tx => tx.hash === transaction.hash))) 
+        */
+        // in mempool
+        if(this.mempool.some(tx => tx.hash === transaction.hash)) return Blockchain.INVALID_TX_DUPLICATED;
+        //
+        // add transaction 
+        this.mempool.push(transaction);
+        return Blockchain.TRANSACTION_ADDED;
+    }
+
+    /**
      * Add block on chain
      */
     addBlock(block: Block): Validation{
@@ -65,6 +108,16 @@ export default class Blockchain {
         // verify
         const validation = block.isValid(lastBlock.index, lastBlock.hash, this.getDifficulty())
         if(!validation.success) return Blockchain.INVALID_BLOCK(validation.message);
+        //
+        // removes the transactions that will be added from the mempool
+        const txs = block.transactions.filter(tx => tx.type !== TransactionType.FEE) // filter to exclude type FEE
+                                      .map(tx => tx.hash); // get block hashes
+        const newMempool = this.mempool.filter(tx => !txs.includes(tx.hash)); // remove from mempool
+        // checks if the amount of transactions is equivalent 
+        if(this.mempool.length + txs.length !== this.mempool.length) Blockchain.INVALID_BLOCK(Blockchain.INVALID_TXS_LENGTH.message);
+        // replaces mempool
+        this.mempool = newMempool;
+        //
         // add
         this.chain.push(block);
         this.nextIndex++;
@@ -100,13 +153,17 @@ export default class Blockchain {
         return 1;
     }
 
-    getNextBlock(): BlockInfo{
+    getNextBlock(): BlockInfo | null{
+        // skip if mempool is empty
+        if(!this.mempool || !this.mempool.length) return null;
+        // copy part of mempool limited by max transactions per block
+        const transactions = this.mempool.slice(0, Blockchain.TXS_PER_BLOCK);
+        //
         const nextIndex = this.chain.length;
         const previousHash = this.getLastBlock().hash;
         const difficulty = this.getDifficulty();
         const maxDifficulty = Blockchain.MAX_DIFFICULTY;
         const feePerTx = this.getFeePerTx();
-        const transactions = [new Transaction()];
         return {
             nextIndex,
             previousHash,
