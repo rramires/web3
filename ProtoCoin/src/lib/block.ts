@@ -55,11 +55,6 @@ export default class Block{
      * @param block - Block optional
      */
     constructor(block?: Block){
-
-        console.log(block)
-        console.log(block?.transactions.length)
-        
-
         this.index = block?.index || 0;
         this.timestamp = block?.timestamp || Date.now();
         this.nonce = block?.nonce || 0;

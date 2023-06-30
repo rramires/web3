@@ -115,7 +115,7 @@ export default class Blockchain {
                                       .map(tx => tx.hash); // get block hashes
         const newMempool = this.mempool.filter(tx => !txs.includes(tx.hash)); // remove from mempool
         // checks if the amount of transactions is equivalent 
-        if(this.mempool.length + txs.length !== this.mempool.length) Blockchain.INVALID_BLOCK(Blockchain.INVALID_TXS_LENGTH.message);
+        if(this.mempool.length === 0 && newMempool.length + txs.length !== this.mempool.length) return Blockchain.INVALID_BLOCK(Blockchain.INVALID_TXS_LENGTH.message);
         // replaces mempool
         this.mempool = newMempool;
         //
