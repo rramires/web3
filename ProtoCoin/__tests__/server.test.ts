@@ -96,4 +96,73 @@ describe("Blockchain Server Tests", () => {
 
         expect(response.status).toEqual(422);
     })
+
+    test("GET /transactions/:hash - Should get transactions (mempool)", async () =>{
+        const response = await request(app)
+                                .get('/transactions/mockHash');
+
+        expect(response.status).toEqual(200);
+        expect(response.body.mempoolIndex).toEqual(0);
+    })
+
+    test("GET /transactions/:hash - Should get transactions (blockchain)", async () =>{
+        const response = await request(app)
+                                .get('/transactions/');
+
+        expect(response.status).toEqual(200);
+        expect(response.body.total).toEqual(0); // return empty
+    })
+
+    test("GET /transactions/:hash - Should NOT get transactions", async () =>{
+        const response = await request(app)
+                                .get('/transactions/-1');
+
+        expect(response.status).toEqual(200);
+        expect(response.body.mempoolIndex).toEqual(-1);
+        expect(response.body.blockIndex).toEqual(-1);
+    })
+
+    test("POST /transactions/ - Should add transaction", async () =>{
+        //
+        // create tx
+        const tx = new Transaction({
+            data: "Tx 1"
+        } as Transaction);
+
+        const response = await request(app)
+                                .post('/transactions/')
+                                .send(tx);
+
+        expect(response.status).toEqual(201);
+    })
+
+    test("POST /transactions/ - Should NOT add transaction (400)", async () =>{
+        //
+        // create tx
+        const tx = new Transaction({
+            data: "Tx 1"
+        } as Transaction);
+        tx.timestamp = -1; // invalid
+
+        const response = await request(app)
+                                .post('/transactions/')
+                                .send(tx);
+
+        expect(response.status).toEqual(400);
+    })
+
+    test("POST /transactions/ - Should add transaction (422)", async () =>{
+        //
+        // create tx
+        const tx = new Transaction({
+            data: "Tx 1"
+        } as Transaction);
+        tx.hash = ""; // invalid
+
+        const response = await request(app)
+                                .post('/transactions/')
+                                .send(tx);
+
+        expect(response.status).toEqual(422);
+    })
 }) 

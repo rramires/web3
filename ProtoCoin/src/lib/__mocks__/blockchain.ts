@@ -2,6 +2,7 @@ import Block from "./block"; // mock
 import Transaction from "./transaction"; // mock
 import Validation from "../validation";
 import BlockInfo from "../blockInfo";
+import TransactionSearch from "../transactionSearch";
 
 
 /**
@@ -14,9 +15,18 @@ export default class Blockchain {
 
     /** Valid blockchain. */
     static VALID_BLOCKCHAIN: Validation = new Validation(true, "Valid blockchain.");
+
+    /** Transaction added. */
+    static TRANSACTION_ADDED: Validation = new Validation(true, "Transaction added.");
+
+    /** Invalid transaction {msg} */
+    static INVALID_TRANSACTION(msg: string): Validation{
+        return new Validation(false, `Invalid transaction: ${msg}`);
+    }
     
     //
     chain: Block[];
+    mempool: Transaction[];
     nextIndex: number = 0;
 
     /**
@@ -25,6 +35,7 @@ export default class Blockchain {
     constructor(){
         // initiate array with the genesis block
         this.chain = [Block.genesis()];
+        this.mempool = [];
         this.nextIndex++;
     }
 
@@ -34,6 +45,20 @@ export default class Blockchain {
      */
     getLastBlock(): Block{
         return this.chain[this.chain.length -1];
+    }
+
+
+    /**
+     * Add a transaction to the mempool
+     */
+    addTransaction(transaction: Transaction): Validation{
+        // verify
+        const validation = transaction.isValid();
+        if(!validation.success) return Blockchain.INVALID_TRANSACTION(validation.message);
+        //
+        // add transaction 
+        this.mempool.push(transaction);
+        return Blockchain.TRANSACTION_ADDED;
     }
 
     /**
@@ -46,6 +71,21 @@ export default class Blockchain {
         this.chain.push(block);
         this.nextIndex++;
         return Blockchain.BLOCK_ADDED;
+    }
+
+
+    /**
+     * Return block by hash
+     * @returns TransactionSearch - return trasaction with mempool or block index
+     */
+    getTransaction(hash: string): TransactionSearch {
+        // skip
+        if (hash === "-1") return { mempoolIndex: -1, blockIndex: -1 } as TransactionSearch;
+        //
+        return {
+            mempoolIndex: 0,
+            transaction: new Transaction()
+        } as TransactionSearch;
     }
 
     /**
