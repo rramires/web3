@@ -152,16 +152,10 @@ describe("Blockchain Server Tests", () => {
     })
 
     test("POST /transactions/ - Should add transaction (422)", async () =>{
-        //
-        // create tx
-        const tx = new Transaction({
-            data: "Tx 1"
-        } as Transaction);
-        tx.hash = ""; // invalid
-
+        
         const response = await request(app)
                                 .post('/transactions/')
-                                .send(tx);
+                                .send({}); // invalid
 
         expect(response.status).toEqual(422);
     })

@@ -60,13 +60,12 @@ export default class Block{
         this.nonce = block?.nonce || 0;
         this.miner = block?.miner || "";
         this.previousHash = block?.previousHash || "";
-        this.transactions = block?.transactions as Transaction[];
-        /*
+        //        
         // map converts each object passed as a parameter into a Transaction
         this.transactions = block?.transactions && block.transactions.length > 0 ? 
                             block.transactions.map(tx => new Transaction(tx)) : 
                             [] as Transaction[]; 
-        */            
+        //      
         this.hash = this.getHash();
     }
 
@@ -170,6 +169,7 @@ export default class Block{
         if(this.transactions && this.transactions.length){
             // checks if there isn't more than one fee-type transaction
             if(this.transactions.filter(tx => tx.type === TransactionType.FEE).length > 1) return Block.TX_TOO_MANY_FEES;
+            //
             // check if there are any invalid transactions
             const validations = this.transactions.map(tx => tx.isValid()); // check all tx and get validations array
             const errors = validations.filter(v => !v.success).map(v => v.message); // filter invalids

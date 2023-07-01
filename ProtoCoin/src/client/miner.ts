@@ -19,6 +19,15 @@ async function mine(){
     //
     console.log("Getting next block info...");
     const { data } = await axios.get(`${BLOCKCHAIN_SERVER}blocks/next`);
+    // check 
+    if (!data) {
+        console.log("No tx found. Waiting...");
+        // call again in 5 seconds
+        return setTimeout(() => {
+            mine();
+        }, 5000);
+    }
+    //
     const blockInfo = data as BlockInfo;
     // get new block
     const newBlock = Block.getFromInfo(blockInfo);
@@ -28,7 +37,7 @@ async function mine(){
     console.log('Start mining block#', blockInfo);
     newBlock.mine(blockInfo.difficulty, minerWallet.publickKey);
     //
-    console.log('Block mined! Sending to blockchain:', newBlock);
+    console.log('Block mined! Sending to blockchain:');
     try{
         // post new block
         await axios.post(`${BLOCKCHAIN_SERVER}blocks/`, newBlock);
