@@ -1,6 +1,7 @@
 import { SHA256 } from "crypto-js";
 import Validation from "./validation";
 import TransactionType from "./transactionType";
+import TransactionInput from "./transactionInput";
 
 /**
  * Transaction class
@@ -8,7 +9,8 @@ import TransactionType from "./transactionType";
 export default class Transaction{
     type: TransactionType;
     timestamp: number;
-    data: string;
+    txInputs: TransactionInput;
+    txOutputs: string;
     hash: string;
 
     /** Valid transaction. */
@@ -24,13 +26,14 @@ export default class Transaction{
     static INVALID_HASH: Validation = new Validation(false, "Invalid hash."); 
 
     /**
-     * 
+     * Creates a new Transaction
      * @param tx Transaction - optional
      */
     constructor(tx?: Transaction){
         this.type = tx?.type || TransactionType.REGULAR;
         this.timestamp = tx?.timestamp || Date.now();
-        this.data = tx?.data || "";
+        this.txInputs = new TransactionInput(tx?.txInputs) || new TransactionInput();
+        this.txOutputs = tx?.txOutputs || "";
         this.hash = tx?.hash || this.getHash();
     }
 
@@ -41,7 +44,8 @@ export default class Transaction{
     getHash(): string{
         return SHA256(this.type +
                       this.timestamp +
-                      this.data).toString();
+                      this.txInputs.getHash() +
+                      this.txOutputs).toString();
     }
 
     /**
@@ -50,7 +54,7 @@ export default class Transaction{
      */
     isValid(): Validation{
         if(this.timestamp < 0) return Transaction.INVALID_TIMESTAMP;
-        if(!this.data) return Transaction.INVALID_DATA;
+        if(!this.txOutputs) return Transaction.INVALID_DATA;
         if(this.hash !== this.getHash()) return Transaction.INVALID_HASH;
         //
         // else - success
