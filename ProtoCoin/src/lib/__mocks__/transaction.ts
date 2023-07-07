@@ -1,6 +1,10 @@
 import { SHA256 } from "crypto-js";
 import Validation from "../validation";
 import TransactionType from "../transactionType";
+import TransactionInput from "./transactionInput";
+
+// moocks
+
 
 /**
  * Transaction class
@@ -8,7 +12,8 @@ import TransactionType from "../transactionType";
 export default class Transaction{
     type: TransactionType;
     timestamp: number;
-    data: string;
+    txInputs: TransactionInput;
+    txOutputs: string;
     hash: string;
 
     /** Valid transaction. */
@@ -30,7 +35,8 @@ export default class Transaction{
     constructor(tx?: Transaction){
         this.type = tx?.type || TransactionType.REGULAR;
         this.timestamp = tx?.timestamp || Date.now();
-        this.data = tx?.data || "tx1";
+        this.txInputs = new TransactionInput(tx?.txInputs) || new TransactionInput();
+        this.txOutputs = tx?.txOutputs || "mockTo";
         this.hash = tx?.hash || this.getHash();
     }
 

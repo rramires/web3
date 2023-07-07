@@ -1,11 +1,13 @@
 import Block from "../src/lib/block";
 import BlockInfo from "../src/lib/blockInfo";
 import Transaction from "../src/lib/transaction";
+import TransactionInput from "../src/lib/transactionInput";
 import TransactionType from "../src/lib/transactionType";
 import Validation from "../src/lib/validation";
 
 // mocks
 jest.mock('../src/lib/transaction');
+jest.mock('../src/lib/transactionInput');
 
 
 describe("Block tests", () => {
@@ -23,7 +25,7 @@ describe("Block tests", () => {
         const block = new Block({index: 1,
                                  previousHash: genesis.hash,
                                  transactions: [new Transaction({
-                                    data: "Tx 1"
+                                    txInputs: new TransactionInput()
                                  } as Transaction)]} as Block); // this params test constructor
         block.mine(mockDifficulty, mockMiner);
 
@@ -38,7 +40,7 @@ describe("Block tests", () => {
         block.index = 1
         block.previousHash = genesis.hash;
         block.transactions = [new Transaction({
-                                    data: "Tx 1"
+                                    txInputs: new TransactionInput()
                                 } as Transaction)];
         block.mine(mockDifficulty, mockMiner);
 
@@ -53,7 +55,7 @@ describe("Block tests", () => {
     test("Should NOT be valid (transactions)", () =>{
 
         const tx = new Transaction({
-                        data: "Tx 1"
+                        txInputs: new TransactionInput()
                     } as Transaction);
         tx.timestamp = -1; // invalid
 
@@ -71,12 +73,12 @@ describe("Block tests", () => {
     test("Should NOT be valid (double transaction fee)", () =>{
 
         const tx1 = new Transaction({
-                        data: "Tx 1",
+                        txInputs: new TransactionInput(),
                         type: TransactionType.FEE
                     } as Transaction);
 
         const tx2 = new Transaction({
-                        data: "Tx 2",
+                        txInputs: new TransactionInput(),
                         type: TransactionType.FEE
                     } as Transaction);
 
@@ -97,7 +99,7 @@ describe("Block tests", () => {
         block.index = 1
         block.previousHash = genesis.hash;
         block.transactions = [new Transaction({
-                                    data: "Tx 1"
+                                    txInputs: new TransactionInput()
                                 } as Transaction)];
         block.nonce = -1; // invalid nonce 
 
@@ -112,7 +114,7 @@ describe("Block tests", () => {
         block.index = -1 // invalid index
         block.previousHash = genesis.hash;
         block.transactions = [new Transaction({
-                                    data: "Tx 1"
+                                    txInputs: new TransactionInput()
                                 } as Transaction)];
         block.mine(mockDifficulty, mockMiner);
 
@@ -127,7 +129,7 @@ describe("Block tests", () => {
         block.index = 1
         block.previousHash = "invalid" // invalid previous hash
         block.transactions = [new Transaction({
-                                    data: "Tx 1"
+                                    txInputs: new TransactionInput()
                                 } as Transaction)];
         block.mine(mockDifficulty, mockMiner);
 
@@ -142,7 +144,7 @@ describe("Block tests", () => {
         block.index = 1
         block.previousHash = genesis.hash;
         block.transactions = [new Transaction({
-                                    data: "Tx 1"
+                                    txInputs: new TransactionInput()
                                 } as Transaction)];
         block.mine(mockDifficulty, mockMiner);
         block.hash = ""; // invalid hash
@@ -161,7 +163,7 @@ describe("Block tests", () => {
             maxDifficulty: 62,
             feePerTx: 1,
             transactions: [new Transaction({
-                                data: "Tx 1"
+                                txInputs: new TransactionInput()
                             } as Transaction)]
         } as BlockInfo)
         block.mine(mockDifficulty, mockMiner);

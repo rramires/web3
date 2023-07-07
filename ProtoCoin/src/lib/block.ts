@@ -77,7 +77,7 @@ export default class Block{
         const block = new Block();
         const tx: Transaction = new Transaction();
               tx.type = TransactionType.FEE;
-              tx.data = "It's the genesis block! ;-)";
+              tx.txOutputs = "It's the genesis block! ;-)";
         block.transactions = [tx];
         block.previousHash = "00000";
         block.mine(1, "its-genesis");
@@ -92,7 +92,7 @@ export default class Block{
         const block = new Block();
               block.index = blockInfo.nextIndex;
               block.previousHash = blockInfo.previousHash;
-              block.transactions = blockInfo.transactions;
+              block.transactions = blockInfo.transactions.map(tx => new Transaction(tx));
         return block;
     }
 

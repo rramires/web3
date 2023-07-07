@@ -9,7 +9,7 @@ const ECPair = ECPairFactory(ecc);
 /**
  * Key class
  */
-export default class Keys{
+export default class KeyPair{
 
     // key pair
     privateKey: string;
@@ -36,7 +36,8 @@ export default class Keys{
              // generate keys
             keys = ECPair.makeRandom();
         }
+        /* c8 ignore next */
         this.privateKey = keys.privateKey?.toString("hex") || "";
-        this.publicKey = keys.publicKey?.toString("hex");
+        this.publicKey = keys.publicKey.toString("hex");
     }
 }

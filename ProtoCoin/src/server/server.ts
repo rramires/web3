@@ -108,7 +108,7 @@ app.get('/transactions/:hash?', (req: Request, res: Response, next:NextFunction)
  */
 app.post('/transactions', (req: Request, res: Response, next:NextFunction) => {
     // skip
-    if (req.body.data === undefined) return res.sendStatus(422);
+    if (req.body.hash === undefined) return res.sendStatus(422);
     // add block transaction
     const tx = new Transaction(req.body as Transaction);
 

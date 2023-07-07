@@ -1,5 +1,6 @@
 import Transaction from "./transaction"; // mock
 import Validation from "../validation";
+import TransactionType from "../transactionType";
 
 /**
  * Block class
@@ -41,8 +42,12 @@ export default class Block{
      */
     static genesis(): Block{
         const block = new Block();
-        block.transactions = [new Transaction()];
-        block.previousHash = "genesis";
+        const tx: Transaction = new Transaction();
+              tx.type = TransactionType.FEE;
+              tx.txOutputs = "It's the genesis block! ;-)";
+        block.transactions = [tx];
+        block.previousHash = "00000";
+        //block.mine(1, "its-genesis");
         return block;
     }
 

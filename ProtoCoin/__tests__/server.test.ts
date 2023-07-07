@@ -2,11 +2,14 @@ import request from "supertest";
 import { app } from "../src/server/server";
 import Block from "../src/lib/block";
 import Transaction from "../src/lib/transaction";
+import TransactionInput from "../src/lib/transactionInput";
 
 // mocks
 jest.mock('../src/lib/transaction');
+jest.mock('../src/lib/transactionInput');
 jest.mock('../src/lib/block');
 jest.mock('../src/lib/blockchain');
+
 
 describe("Blockchain Server Tests", () => {
 
@@ -77,7 +80,7 @@ describe("Blockchain Server Tests", () => {
                                 index: -1, // invalid index
                                 previousHash: "mockHash",
                                 transactions: [new Transaction({
-                                                    data: "Tx 1"
+                                                txInputs: new TransactionInput()
                                                 } as Transaction)]
                             } as Block);
 
@@ -126,7 +129,7 @@ describe("Blockchain Server Tests", () => {
         //
         // create tx
         const tx = new Transaction({
-            data: "Tx 1"
+            txInputs: new TransactionInput()
         } as Transaction);
 
         const response = await request(app)
@@ -140,7 +143,7 @@ describe("Blockchain Server Tests", () => {
         //
         // create tx
         const tx = new Transaction({
-            data: "Tx 1"
+            txInputs: new TransactionInput()
         } as Transaction);
         tx.timestamp = -1; // invalid
 
@@ -158,5 +161,5 @@ describe("Blockchain Server Tests", () => {
                                 .send({}); // invalid
 
         expect(response.status).toEqual(422);
-    })
+    }) 
 }) 
