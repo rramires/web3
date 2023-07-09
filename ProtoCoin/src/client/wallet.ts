@@ -4,9 +4,14 @@ dotenv.config();
 import axios from 'axios';
 import readline from 'readline';
 import KeyPair from "../lib/keyPair";
+import Transaction from '../lib/transaction';
+import TransactionType from '../lib/transactionType';
+import TransactionInput from '../lib/transactionInput';
 
 
 const BLOCKCHAIN_SERVER = process.env.BLOCKCHAIN_SERVER;
+const BLOCKCHAIN_PORT = process.env.BLOCKCHAIN_PORT;
+
 
 let myWalletPub = "";
 let myWalletPriv = "";
@@ -135,8 +140,54 @@ function sendTx(){
         console.log(`You don't have a wallet yet.`);
         return preMenu();
     }
-    // TODO: Send TX
-    console.log("This option isn't implemented yet!");
+    
+    console.log(`Your wallet is ${myWalletPub}`);
+    
+    // ask for the destination wallet
+    rl.question(`To Wallet: `, (toWallet) => {
+        // skip
+        if (toWallet.length < 66){
+            console.log(`Invalid wallet:`, toWallet.length, 'chars');
+            return preMenu();
+        }
+        // ask for the amount
+        rl.question(`Amount: `, async(amountStr) => {
+            const amount = parseInt(amountStr);
+            // skip
+            if (!amount){
+                console.log(`Invalid amount.`);
+                return preMenu();
+            }
+
+            // TODO: balance validation
+
+
+            // create the transaction 
+            const tx = new Transaction()
+            tx.timestamp = Date.now();
+            tx.txOutputs = toWallet;
+            tx.type = TransactionType.REGULAR;
+            tx.txInputs = new TransactionInput({
+                amount, // get amount
+                fromAddress: myWalletPub // get the destiny
+            } as TransactionInput)
+            // sign the transaction with the private key
+            tx.txInputs.sign(myWalletPriv);
+            // generate transaction hash
+            tx.hash = tx.getHash();
+
+            // send to mempool
+            try{
+                const txResponse = await axios.post(`${BLOCKCHAIN_SERVER}:${BLOCKCHAIN_PORT}/transactions/`, tx);
+                console.log(`Transaction accepted. Waiting the miners!`);
+                console.log(txResponse.data.hash);
+            }
+            catch(err: any){
+                console.error(err.response ? err.response.data : err.message);
+            }
+            return preMenu();
+        })
+    })
     //
     preMenu();
 }
