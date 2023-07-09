@@ -34,6 +34,9 @@ export default class Blockchain {
     /** Invalid duplicate transaction. */
     static INVALID_TX_DUPLICATED: Validation = new Validation(false, "Invalid duplicate transaction.");
 
+    /** There is a pending transaction from the same wallet. */
+    static PENDING_TX_SAME_WALLET: Validation = new Validation(false, "There is a pending transaction from the same wallet.");
+
     /** Transaction added. */
     static TRANSACTION_ADDED: Validation = new Validation(true, "Transaction added.");
 
@@ -82,9 +85,27 @@ export default class Blockchain {
      * Add a transaction to the mempool
      */
     addTransaction(transaction: Transaction): Validation{
-        // verify
+        // verify Tx
         const validation = transaction.isValid();
         if(!validation.success) return Blockchain.INVALID_TRANSACTION(validation.message);
+        // in mempool
+        if(this.mempool.some(tx => tx.hash === transaction.hash)) return Blockchain.INVALID_TX_DUPLICATED;
+        //
+        // Check inputs
+        if (transaction.txInputs){
+            //
+            // Limits to one pending transaction per wallet 
+            // (in this currency example this was done for simplicity)
+            const from = transaction.txInputs.fromAddress;
+            // Checks if the wallet already has a transaction in the mempool 
+            const pendingTx = this.mempool.map(tx => tx.txInputs)
+                                        .filter(txi => txi!.fromAddress === from);
+            // skip
+            if(pendingTx && pendingTx.length > 0) return Blockchain.PENDING_TX_SAME_WALLET;
+            //
+            //TODO: Validate the origin of the funds
+
+        }
         //
         // check if transaction exists
         /* 
@@ -92,8 +113,6 @@ export default class Blockchain {
             // in blockchain - some block with some transaction with the same hash 
             if(this.chain.some(b => b.transactions.some(tx => tx.hash === transaction.hash))) 
         */
-        // in mempool
-        if(this.mempool.some(tx => tx.hash === transaction.hash)) return Blockchain.INVALID_TX_DUPLICATED;
         //
         // add transaction 
         this.mempool.push(transaction);

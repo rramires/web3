@@ -56,6 +56,36 @@ describe("Blockchain tests", () => {
         expect(validation).toEqual(Blockchain.INVALID_TX_DUPLICATED);
     })
 
+    test("Should NOT add transaction with same wallet in mempool", () =>{
+        const blockchain = new Blockchain();
+
+        // from
+        const fromAddress = "02bb0a21ebfeafef1ebcbad6fd5eb359bd6289e0cf9fb0379b013a40bc88b2f26b";
+
+        // create tx1
+        const tx1 = new Transaction({
+                        txInputs: new TransactionInput({
+                            fromAddress
+                        } as TransactionInput)
+                    } as Transaction);
+        tx1.hash = "tx1";
+        // add direct to mempool 
+        blockchain.mempool.push(tx1); 
+
+        // create tx2
+        const tx2 = new Transaction({
+            txInputs: new TransactionInput({
+                            fromAddress
+                        } as TransactionInput)
+        } as Transaction);
+        tx2.hash = "tx2";
+                    
+        // add tx for validation
+        const validation: Validation = blockchain.addTransaction(tx2);
+        // test
+        expect(validation).toEqual(Blockchain.PENDING_TX_SAME_WALLET);
+    })
+
     test("Should NOT add invalid transaction", () =>{
         const blockchain = new Blockchain();
 
