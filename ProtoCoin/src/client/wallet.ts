@@ -202,8 +202,12 @@ function searchTx(){
         console.log(`You don't have a wallet yet.`);
         return preMenu();
     }
-    // TODO: Search TX
-    console.log("This option isn't implemented yet!");
+    // Search TX
+    rl.question(`Your tx hash: `, async (hash) => {
+        const response = await axios.get(`${BLOCKCHAIN_SERVER}:${BLOCKCHAIN_PORT}/transactions/${hash}`);
+        console.log(response.data);
+        return preMenu();
+    })
     //
     preMenu();
 }

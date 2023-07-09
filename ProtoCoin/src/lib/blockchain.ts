@@ -88,7 +88,7 @@ export default class Blockchain {
         // verify Tx
         const validation = transaction.isValid();
         if(!validation.success) return Blockchain.INVALID_TRANSACTION(validation.message);
-        // in mempool
+        // verify Tx duplicated in mempool
         if(this.mempool.some(tx => tx.hash === transaction.hash)) return Blockchain.INVALID_TX_DUPLICATED;
         //
         // Check inputs
