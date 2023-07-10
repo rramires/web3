@@ -32,8 +32,15 @@ export default class Block{
     /** Invalid hash */
     static INVALID_HASH: Validation = new Validation(false, "Invalid hash."); 
 
+    /** Invalid transactions - No fee transaction. */
+    static NO_FEE_TX: Validation = new Validation(false, "No fee transaction.");
+
     /** Invalid transactions - too many fees */
     static TX_TOO_MANY_FEES: Validation = new Validation(false, "Invalid Tx. There is more than one fee in this block.");
+
+    /** Invalid transactions - Fee tx is not miner. */
+    static FEE_TX_ISNT_MINER: Validation = new Validation(false, "Fee tx is not miner.");
+
 
     /** Invalid transaction in this block: {msg} */
     static INVALID_TX_IN_BLOCK(msg: string): Validation{
@@ -167,8 +174,14 @@ export default class Block{
         //
         // check transactions
         if(this.transactions && this.transactions.length){
-            // checks if there isn't more than one fee-type transaction
-            if(this.transactions.filter(tx => tx.type === TransactionType.FEE).length > 1) return Block.TX_TOO_MANY_FEES;
+            // get fee txs
+            const feeTxs = this.transactions.filter(tx => tx.type === TransactionType.FEE);
+            // check if there is Fee transaction
+            if(feeTxs.length === 0) return Block.NO_FEE_TX;
+            // checks if there is more than one fee-type transaction
+            if(feeTxs.length > 1) return Block.TX_TOO_MANY_FEES;
+            // check if the miner will receive the reward 
+            if(feeTxs[0].txOutputs !== this.miner) return Block.FEE_TX_ISNT_MINER;
             //
             // check if there are any invalid transactions
             const validations = this.transactions.map(tx => tx.isValid()); // check all tx and get validations array

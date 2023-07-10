@@ -39,7 +39,8 @@ export default class Transaction{
         this.type = tx?.type || TransactionType.REGULAR;
         this.timestamp = tx?.timestamp || Date.now();
         /* c8 ignore next */
-        this.txInputs = new TransactionInput(tx?.txInputs) || new TransactionInput();
+        this.txInputs = tx && tx.txInputs ? new TransactionInput(tx?.txInputs) : undefined;
+        //
         this.txOutputs = tx?.txOutputs || "";
         this.hash = tx?.hash || this.getHash();
     }
