@@ -30,13 +30,16 @@ export default class Blockchain {
     nextIndex: number = 0;
 
     /**
-     * Creates a new mocked Blockchain
+     * Creates a new Blockchain
+     * @param miner - string 
      */
-    constructor(){
-        // initiate array with the genesis block
-        this.chain = [Block.genesis()];
-        this.mempool = [];
+    constructor(miner: string){
+        // start mempool
+        this.mempool = [new Transaction()]; // starts with mocked transaction
+        // start chain array with the genesis block
+        this.chain = [Block.genesis(miner)];
         this.nextIndex++;
+        //console.log('The blockchain starts with: ', this.chain);
     }
 
     /**
@@ -93,6 +96,7 @@ export default class Blockchain {
      * @returns Block - return block
      */
     getBlock(hash: string): Block | undefined{
+        if(!hash || hash === "-1") return undefined;
         return this.chain.find(b => b.hash === hash);
     }
 
@@ -116,7 +120,7 @@ export default class Blockchain {
             difficulty: 1,
             maxDifficulty: 62,
             feePerTx: this.getFeePerTx(),
-            transactions: [new Transaction()]
+            transactions: this.mempool.slice(0, 2)
         } as BlockInfo
     }
 }

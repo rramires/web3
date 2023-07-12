@@ -3,6 +3,7 @@ import morgan from "morgan";
 import Blockchain from "../lib/blockchain";
 import Block from "../lib/block";
 import Transaction from "../lib/transaction";
+import KeyPair from "../lib/keyPair";
 
 /**
  * Express Server
@@ -14,9 +15,15 @@ app.use(express.json());
 
 
 /**
+ * Blockchain owner wallet
+ */
+const wallet = new KeyPair(process.env.BLOCKCHAIN_WALLET);
+
+
+/**
  * Blockchain
  */
-const blockchain = new Blockchain();
+const blockchain = new Blockchain(wallet.publicKey);
 
 
 /****************

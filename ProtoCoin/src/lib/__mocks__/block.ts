@@ -1,9 +1,11 @@
 import Transaction from "./transaction"; // mock
 import Validation from "../validation";
 import TransactionType from "../transactionType";
+import TransactionOutput from "./transactionOutput";
+import Blockchain from "../blockchain";
 
 /**
- * Block class
+ * Mocked Block class
  */
 export default class Block{
 
@@ -38,16 +40,31 @@ export default class Block{
 
     /**
      * Create the first block
+     * @param miner - string
      * @returns Block - return genesis block
      */
-    static genesis(): Block{
-        const block = new Block();
+    static genesis(miner: string): Block{
+        // TODO: calculate the reward
+        const reward = 10; 
+
+        // create transaction
         const tx: Transaction = new Transaction();
-              tx.type = TransactionType.FEE;
-              tx.txOutputs = "It's the genesis block! ;-)";
+        tx.type = TransactionType.FEE;
+        tx.txOutputs = [new TransactionOutput({
+        amount: reward,
+        toAddress: miner
+        } as TransactionOutput)]
+        // hash tx
+        tx.hash = tx.getHash();
+        // add hash to output
+        tx.txOutputs[0].tx = tx.hash;
+
+        // create block
+        const block = new Block();
         block.transactions = [tx];
-        block.previousHash = "00000";
-        //block.mine(1, "its-genesis");
+        block.previousHash = "0".repeat(Blockchain.DIFFICULTY_FACTOR) + "_this_is_the_genesis_block";
+        block.mine(1, miner);
+        //
         return block;
     }
 
@@ -57,6 +74,16 @@ export default class Block{
      */
     getHash():string {
         return this.hash || "mockHash";
+    }
+
+    /**
+     * Generates a new valid hash for this block with the specified difficulty
+     * @param difficulty The blockchain current difficulty
+     * @param miner The miner wallet address
+     */
+    mine(difficulty: number, miner: string){
+        //
+        this.miner = miner;
     }
 
     /**

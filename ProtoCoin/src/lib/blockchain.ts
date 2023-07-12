@@ -45,6 +45,10 @@ export default class Blockchain {
         return new Validation(false, `Invalid transaction: ${msg}`);
     }
 
+    /** There is no next block. */
+    static INVALID_NO_NEXT_BLOCK: Validation = new Validation(true, "There is no next block.");
+    
+
     // props
     chain: Block[];
     mempool: Transaction[];
@@ -59,13 +63,14 @@ export default class Blockchain {
 
     /**
      * Creates a new Blockchain
+     * @param miner - string 
      */
-    constructor(){
-        // initiate array with the genesis block
-        this.chain = [Block.genesis()];
-        this.nextIndex++;
-        // initiate empty mempool
+    constructor(miner: string){
+        // start mempool
         this.mempool = [];
+        // start chain array with the genesis block
+        this.chain = [Block.genesis(miner)];
+        this.nextIndex++;
         //console.log('The blockchain starts with: ', this.chain);
     }
 
@@ -92,18 +97,21 @@ export default class Blockchain {
         if(this.mempool.some(tx => tx.hash === transaction.hash)) return Blockchain.INVALID_TX_DUPLICATED;
         //
         // Check inputs
-        if (transaction.txInputs){
+        if (transaction.txInputs && transaction.txInputs.length > 0){
             //
             // Limits to one pending transaction per wallet 
             // (in this currency example this was done for simplicity)
-            const from = transaction.txInputs.fromAddress;
-            // Checks if the wallet already has a transaction in the mempool 
-            const pendingTx = this.mempool.map(tx => tx.txInputs)
-                                        .filter(txi => txi!.fromAddress === from);
+            const from = transaction.txInputs[0].fromAddress;
+            // Checks if the wallet already has a transactions in the mempool 
+            const pendingTx = this.mempool
+                                .filter(tx => tx.txInputs && tx.txInputs.length)
+                                .map(tx => tx.txInputs)
+                                .flat()
+                                .filter(txi => txi!.fromAddress === from);
             // skip
             if(pendingTx && pendingTx.length > 0) return Blockchain.PENDING_TX_SAME_WALLET;
             //
-            //TODO: Validate the origin of the funds
+            //TODO: Validate the origin of the funds (UTXOs)
 
         }
         //
@@ -123,10 +131,11 @@ export default class Blockchain {
      * Add block on chain
      */
     addBlock(block: Block): Validation{
+        const nextBlock = this.getNextBlock();
+        if (!nextBlock) return Blockchain.INVALID_NO_NEXT_BLOCK;
         // 
-        const lastBlock = this.getLastBlock();
         // verify
-        const validation = block.isValid(lastBlock.index, lastBlock.hash, this.getDifficulty())
+        const validation = block.isValid(nextBlock.nextIndex, nextBlock.previousHash, nextBlock.difficulty)
         if(!validation.success) return Blockchain.INVALID_BLOCK(validation.message);
         //
         // removes the transactions that will be added from the mempool

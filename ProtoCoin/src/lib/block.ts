@@ -3,6 +3,8 @@ import Validation from "./validation";
 import BlockInfo from "./blockInfo";
 import Transaction from "./transaction";
 import TransactionType from "./transactionType";
+import Blockchain from "./blockchain";
+import TransactionOutput from "./transactionOutput";
 
 /**
  * Block class
@@ -78,16 +80,31 @@ export default class Block{
 
     /**
      * Create the first block
+     * @param miner - string
      * @returns Block - return genesis block
      */
-    static genesis(): Block{
-        const block = new Block();
+    static genesis(miner: string): Block{
+        // TODO: calculate the reward
+        const reward = 10; 
+
+        // create transaction
         const tx: Transaction = new Transaction();
-              tx.type = TransactionType.FEE;
-              tx.txOutputs = "It's the genesis block! ;-)";
+        tx.type = TransactionType.FEE;
+        tx.txOutputs = [new TransactionOutput({
+        amount: reward,
+        toAddress: miner
+        } as TransactionOutput)]
+        // hash tx
+        tx.hash = tx.getHash();
+        // add hash to output
+        tx.txOutputs[0].tx = tx.hash;
+
+        // create block
+        const block = new Block();
         block.transactions = [tx];
-        block.previousHash = "00000";
-        block.mine(1, "its-genesis");
+        block.previousHash = "0".repeat(Blockchain.DIFFICULTY_FACTOR) + "_this_is_the_genesis_block";
+        block.mine(1, miner);
+        //
         return block;
     }
 
@@ -160,7 +177,7 @@ export default class Block{
     isValid(previousIndex: number, previousHash: string, difficulty: number): Validation{
         // simple checks
         if(this.timestamp < 0) return Block.INVALID_TIMESTAMP;
-        if(!this.nonce || !this.miner) return Block.NO_MINED;
+        if(this.nonce < 1 || !this.miner) return Block.NO_MINED;
         //
         // checks if the index is the next value in the blockchain
         if((this.index - 1) !== previousIndex) return Block.INVALID_INDEX;
@@ -181,7 +198,9 @@ export default class Block{
             // checks if there is more than one fee-type transaction
             if(feeTxs.length > 1) return Block.TX_TOO_MANY_FEES;
             // check if the miner will receive the reward 
-            if(feeTxs[0].txOutputs !== this.miner) return Block.FEE_TX_ISNT_MINER;
+            if (!feeTxs[0].txOutputs.some(txo => txo.toAddress === this.miner)) return Block.FEE_TX_ISNT_MINER;
+            //
+            // TODO: validate the amount of fees 
             //
             // check if there are any invalid transactions
             const validations = this.transactions.map(tx => tx.isValid()); // check all tx and get validations array

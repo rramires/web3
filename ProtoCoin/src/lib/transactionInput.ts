@@ -11,7 +11,7 @@ const ECPair = ECPairFactory(ecc);
 export default class TransactionInput{
     
     /** Signature is required. */
-    static SIGNATURE_REQUIRED: Validation = new Validation(false, "Signature is required.");
+    static PREV_TX_SIGNATURE_REQUIRED: Validation = new Validation(false, "Previous tx and signature is required.");
 
     /** Amount must be greater than zero. */
     static INVALID_AMOUNT: Validation = new Validation(false, "Amount must be greater than zero.");
@@ -22,6 +22,7 @@ export default class TransactionInput{
     /** Valid transaction input. */
     static VALID_TX_INPUT: Validation = new Validation(true, "Valid transaction input.");
 
+    previousTx: string;
     fromAddress: string;
     amount: number;
     signature: string;
@@ -31,6 +32,7 @@ export default class TransactionInput{
      * @param txInput - TransactionInput optional
      */
     constructor(txInput?: TransactionInput){
+        this.previousTx = txInput?.previousTx || "";
         this.fromAddress = txInput?.fromAddress || "";
         this.signature = txInput?.signature || "";
         this.amount = txInput?.amount || 0;
@@ -54,7 +56,7 @@ export default class TransactionInput{
      */
     getHash(): string{
         // *** the signature must not be part of the hash
-        return sha256(this.fromAddress + this.amount).toString();
+        return sha256(this.previousTx + this.fromAddress + this.amount).toString();
     }
 
     /**
@@ -62,8 +64,8 @@ export default class TransactionInput{
      * @returns Validation - return if tx inpiut is valid
      */
     isValid(): Validation{
-        // check signature
-        if(!this.signature) return TransactionInput.SIGNATURE_REQUIRED;
+        // check previous tx and signature
+        if(!this.previousTx || !this.signature) return TransactionInput.PREV_TX_SIGNATURE_REQUIRED;
         // check amount
         if(this.amount < 1) return TransactionInput.INVALID_AMOUNT;
         // check signature
