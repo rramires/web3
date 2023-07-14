@@ -7,6 +7,7 @@ import BlockInfo from "../lib/blockInfo";
 import KeyPair from "../lib/keyPair";
 import Transaction from "../lib/transaction";
 import TransactionType from "../lib/transactionType";
+import TransactionOutput from "../lib/transactionOutput";
 
 const BLOCKCHAIN_SERVER = `${process.env.BLOCKCHAIN_SERVER}:${process.env.BLOCKCHAIN_PORT}/`;
 // mock miner wallet
@@ -19,6 +20,7 @@ async function mine(){
     //
     console.log("Getting next block info...");
     const { data } = await axios.get(`${BLOCKCHAIN_SERVER}blocks/next`);
+    //
     // check 
     if (!data) {
         console.log("No tx found. Waiting...");
@@ -28,24 +30,47 @@ async function mine(){
         }, 5000);
     }
     //
+    // calculate reward 
+    function getRewardTx(): Transaction{
+        //
+        let amount = 10; // TODO: implement reward calc
+
+        // tx output
+        const txo = new TransactionOutput({
+            toAddress: minerWallet.publicKey,
+            amount 
+        } as TransactionOutput);
+
+        // Add Tx reward
+        const tx = new Transaction({
+            type: TransactionType.FEE,
+            txOutputs: [txo]
+        }as Transaction);
+
+        // hash tx
+        tx.hash = tx.getHash();
+        // copy hash to output
+        tx.txOutputs[0].tx = tx.hash;
+        //
+        return tx;
+    }
+    //
+    // create block
     const blockInfo = data as BlockInfo;
     // get new block
     const newBlock = Block.getFromInfo(blockInfo);
+    // add reward transaction
+    newBlock.transactions.push(getRewardTx());
     // add miner
     newBlock.miner = minerWallet.publicKey;
-    //
-    // Add Tx reward
-    newBlock.transactions.push(new Transaction({
-                        type: TransactionType.FEE,
-                        txOutputs: minerWallet.publicKey
-                    }as Transaction));
     // generate hash
     newBlock.hash = newBlock.getHash();
     //
-    //
+    // mining
     console.log('Start mining block#', blockInfo);
     newBlock.mine(blockInfo.difficulty, minerWallet.publicKey);
     //
+    // send to blockchain
     console.log('Block mined! Sending to blockchain:');
     try{
         // post new block
@@ -57,6 +82,7 @@ async function mine(){
     catch(error: any){
         console.error(error.response ? error.response.data : error.message);
     }
+    //
     // call again
     setTimeout(() =>{
         mine();
