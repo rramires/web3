@@ -4,6 +4,7 @@ import Blockchain from "../lib/blockchain";
 import Block from "../lib/block";
 import Transaction from "../lib/transaction";
 import KeyPair from "../lib/keyPair";
+import TransactionOutput from "../lib/transactionOutput";
 
 /**
  * Express Server
@@ -18,6 +19,7 @@ app.use(express.json());
  * Blockchain owner wallet
  */
 const wallet = new KeyPair(process.env.BLOCKCHAIN_WALLET);
+
 
 
 /**
@@ -127,6 +129,25 @@ app.post('/transactions', (req: Request, res: Response, next:NextFunction) => {
     else{
         res.status(201).json(tx);
     }
+})
+
+/**
+ * Get wallet infos
+ */
+app.get('/wallets/:wallet', (req: Request, res: Response, next: NextFunction) => {
+    //
+    const wallet = req.params.wallet;
+
+    //TODO: Make getBalance and getUtxo
+
+    // mock
+    return res.json({ balance: 10, 
+                fee: blockchain.getFeePerTx(), 
+                utxo: [new TransactionOutput({
+                    amount: 10,
+                    toAddress: wallet,
+                    tx: "mockTx"
+                } as TransactionOutput)] }); 
 })
 //
 export {

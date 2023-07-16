@@ -18,9 +18,9 @@ export default class Blockchain {
     /** Valid blockchain. */
     static VALID_BLOCKCHAIN: Validation = new Validation(true, "Valid blockchain.");
 
-    /** Invalid block {msg} */
+    /** BC - Invalid block {msg} */
     static INVALID_BLOCK(msg: string): Validation{
-        return new Validation(false, `Invalid block: ${msg}`);
+        return new Validation(false, `BC - Invalid block: ${msg}`);
     }
 
     /** Invalid block No {X}: {msg} */
@@ -135,8 +135,8 @@ export default class Blockchain {
         if (!nextBlock) return Blockchain.INVALID_NO_NEXT_BLOCK;
         // 
         // verify
-        const validation = block.isValid(nextBlock.nextIndex, nextBlock.previousHash, nextBlock.difficulty)
-        if(!validation.success) return Blockchain.INVALID_BLOCK(validation.message);
+        //const validation = block.isValid(nextBlock.nextIndex, nextBlock.previousHash, nextBlock.difficulty)
+        // if(!validation.success) return Blockchain.INVALID_BLOCK(validation.message); //FIXME: get PreviousBlock to compare???
         //
         // removes the transactions that will be added from the mempool
         const txs = block.transactions.filter(tx => tx.type !== TransactionType.FEE) // filter to exclude type FEE

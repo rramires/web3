@@ -7,6 +7,7 @@ import KeyPair from "../lib/keyPair";
 import Transaction from '../lib/transaction';
 import TransactionType from '../lib/transactionType';
 import TransactionInput from '../lib/transactionInput';
+import TransactionOutput from '../lib/transactionOutput';
 
 
 const BLOCKCHAIN_SERVER = process.env.BLOCKCHAIN_SERVER;
@@ -159,23 +160,39 @@ function sendTx(){
                 return preMenu();
             }
 
-            // TODO: balance validation
+            // get wallet information
+            const walletResponse = await axios.get(`${BLOCKCHAIN_SERVER}:${BLOCKCHAIN_PORT}/wallets/${myWalletPub}`);
+            const balance = walletResponse.data.balance as number;
+            const fee = walletResponse.data.fee as number;
+            const utxo = walletResponse.data.utxo as TransactionOutput[];
 
+            // check if the balance is enough
+            if (balance < amount + fee) {
+                console.log(`Insufficient balance (tx + fee).`);
+                return preMenu();
+            }
 
             // create the transaction 
             const tx = new Transaction()
             tx.timestamp = Date.now();
-            tx.txOutputs = toWallet;
             tx.type = TransactionType.REGULAR;
-            tx.txInputs = new TransactionInput({
+            // inputs
+            tx.txInputs = [new TransactionInput({
                 amount, // get amount
-                fromAddress: myWalletPub // get the destiny
-            } as TransactionInput)
+                fromAddress: myWalletPub, // get the destiny
+                previousTx: utxo[0].tx //FIXME: must be improved
+            } as TransactionInput)];
+            // outputs
+            tx.txOutputs = [new TransactionOutput({
+                toAddress: toWallet,
+                amount // get amount
+            } as TransactionOutput)];
             // sign the transaction with the private key
-            tx.txInputs.sign(myWalletPriv);
+            tx.txInputs[0].sign(myWalletPriv);
             // generate transaction hash
             tx.hash = tx.getHash();
-
+            // copy hash to output
+            tx.txOutputs[0].tx = tx.getHash();
             // send to mempool
             try{
                 const txResponse = await axios.post(`${BLOCKCHAIN_SERVER}:${BLOCKCHAIN_PORT}/transactions/`, tx);
