@@ -180,7 +180,7 @@ export default class Block{
         if(this.nonce < 1 || !this.miner) return Block.NO_MINED;
         //
         // checks if the index is the next value in the blockchain
-        console.log("this.index: ",  this.index, "previousIndex: ", previousIndex);
+        //console.log("this.index: ",  this.index, "previousIndex: ", previousIndex);
         if((this.index - 1) !== previousIndex) return Block.INVALID_INDEX;
         //
         // checks if the previous hash is the same as the last block

@@ -8,7 +8,7 @@ export default class TransactionOutput {
 
 
     /** Invalid negative amount. */
-    static INVALID_NEGATIVE_AMOUNT: Validation = new Validation(true, "Invalid, negative amount.");
+    static INVALID_NEGATIVE_AMOUNT: Validation = new Validation(false, "Invalid, negative amount.");
 
     /** Valid transaction output. */
     static VALID_TX_OUTPUT: Validation = new Validation(true, "Valid transaction output.");

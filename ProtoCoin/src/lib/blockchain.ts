@@ -135,15 +135,15 @@ export default class Blockchain {
         if (!nextBlock) return Blockchain.INVALID_NO_NEXT_BLOCK;
         // 
         // verify
-        //const validation = block.isValid(nextBlock.nextIndex, nextBlock.previousHash, nextBlock.difficulty)
-        // if(!validation.success) return Blockchain.INVALID_BLOCK(validation.message); //FIXME: get PreviousBlock to compare???
+        const validation = block.isValid(nextBlock.nextIndex -1, nextBlock.previousHash, nextBlock.difficulty)
+        if(!validation.success) return Blockchain.INVALID_BLOCK(validation.message);
         //
         // removes the transactions that will be added from the mempool
         const txs = block.transactions.filter(tx => tx.type !== TransactionType.FEE) // filter to exclude type FEE
                                       .map(tx => tx.hash); // get block hashes
         const newMempool = this.mempool.filter(tx => !txs.includes(tx.hash)); // remove from mempool
         // checks if the amount of transactions is equivalent 
-        if(this.mempool.length === 0 && newMempool.length + txs.length !== this.mempool.length) return Blockchain.INVALID_BLOCK(Blockchain.INVALID_TXS_LENGTH.message);
+        if(newMempool.length + txs.length !== this.mempool.length) return Blockchain.INVALID_BLOCK(Blockchain.INVALID_TXS_LENGTH.message);
         // replaces mempool
         this.mempool = newMempool;
         //
