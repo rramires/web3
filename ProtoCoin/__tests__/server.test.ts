@@ -107,15 +107,15 @@ describe("Blockchain Server Tests", () => {
         expect(response.body.mempoolIndex).toEqual(0);
     })
 
-    /* test("GET /transactions/:hash - Should get transactions (blockchain)", async () =>{
+    test("GET /transactions/:hash - Should get transactions (blockchain)", async () =>{
         const response = await request(app)
                                 .get('/transactions/');
 
         console.log("response.body:", response.body);
 
         expect(response.status).toEqual(200);
-        expect(response.body.total).toEqual(0); // return empty
-    }) */
+        expect(response.body.total).toEqual(1); 
+    }) 
 
     test("GET /transactions/:hash - Should NOT get transactions", async () =>{
         const response = await request(app)
@@ -162,5 +162,13 @@ describe("Blockchain Server Tests", () => {
                                 .send({}); // invalid
 
         expect(response.status).toEqual(422);
+    })
+
+    test('GET /wallets/:wallet - Should get balance', async () => {
+        const response = await request(app)
+            .get('/wallets/abc');
+
+        expect(response.status).toEqual(200);
+        expect(response.body.balance).toEqual(10);
     })
 }) 

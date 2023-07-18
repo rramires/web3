@@ -98,4 +98,50 @@ describe("Block tests", () => {
         // test
         expect(valid).toEqual(Transaction.INVALID_HASH);
     })
+
+    test("Should NOT be valid (TXO reference hash)", () =>{
+
+        const tx = new Transaction();
+              tx.txInputs = [new TransactionInput()]
+              tx.txOutputs = [new TransactionOutput({
+                toAddress: alice.publicKey
+              } as TransactionOutput)]
+              tx.hash = tx.getHash();
+              tx.txOutputs[0].tx = "invalidHash"; // invalid
+
+        const valid: Validation = tx.isValid();
+        // test
+        expect(valid).toEqual(Transaction.INVALID_TXO_REF_HASH);
+    })
+
+    test("Should NOT be valid (Invalid TX output)", () =>{
+
+        const tx = new Transaction();
+              tx.txInputs = [new TransactionInput({
+            } as TransactionInput)]
+              // invalid NO tx.txOutputs
+              tx.hash = tx.getHash();
+
+        const valid: Validation = tx.isValid();
+        // test
+        expect(valid).toEqual(Transaction.INVALID_TXO);
+    })
+
+    test("Should NOT be valid (inputs < outputs)", () =>{
+
+        const tx = new Transaction();
+              tx.txInputs = [new TransactionInput({
+                amount: 1 // input value
+            } as TransactionInput)]
+              tx.txOutputs = [new TransactionOutput({
+                amount: 2, // invalid - higher output value
+                toAddress: alice.publicKey
+              } as TransactionOutput)]
+              tx.hash = tx.getHash();
+              tx.txOutputs[0].tx = tx.hash;
+
+        const valid: Validation = tx.isValid();
+        // test
+        expect(valid).toEqual(Transaction.INVALID_TXO_GREATER);
+    })
 });

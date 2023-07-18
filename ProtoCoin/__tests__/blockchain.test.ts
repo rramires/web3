@@ -205,6 +205,31 @@ describe("Blockchain tests", () => {
         expect(validation).toEqual(Blockchain.INVALID_NO_NEXT_BLOCK);
     })
 
+    test("Should NOT add block (mempool length)", () =>{
+        const blockchain = new Blockchain(alice.publicKey);
+
+        // added direct transactions to force invalid mempool length
+        blockchain.mempool.push(new Transaction());
+        blockchain.mempool.push(new Transaction());
+
+        // create tx
+        const tx = new Transaction({
+                        txInputs: [new TransactionInput()]
+                    } as Transaction);
+        // add to mempool
+        blockchain.mempool.push(tx);  
+
+        // add block
+        const block = new Block();
+        block.index = 1
+        block.previousHash = blockchain.chain[0].hash;
+        block.transactions = [tx];
+        //
+        const validation: Validation = blockchain.addBlock(block);
+        // test
+        expect(validation).toEqual(Blockchain.INVALID_BLOCK(Blockchain.INVALID_TXS_LENGTH.message));
+    })
+
     /* test("Should NOT add block (mempool length)", () =>{
         const blockchain = new Blockchain(alice.publicKey);
 

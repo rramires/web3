@@ -10,7 +10,7 @@ const ECPair = ECPairFactory(ecc);
  */
 export default class TransactionInput{
     
-    /** Signature is required. */
+    /** Previous tx and signature is required. */
     static PREV_TX_SIGNATURE_REQUIRED: Validation = new Validation(false, "Previous tx and signature is required.");
 
     /** Amount must be greater than zero. */

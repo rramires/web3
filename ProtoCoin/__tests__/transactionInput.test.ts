@@ -30,7 +30,8 @@ describe("Transaction Input tests", () => {
     test('Should NOT be valid (signature required)', () => {
         const txInput = new TransactionInput({
             amount: 10,
-            fromAddress: alice.publicKey
+            fromAddress: alice.publicKey,
+            previousTx: "mockTx"
         } as TransactionInput)
         // *** txInput.sign(alice.privateKey); // not sign
 
@@ -51,7 +52,6 @@ describe("Transaction Input tests", () => {
         // test
         expect(valid).toEqual(TransactionInput.INVALID_AMOUNT);
     })
-
 
     test('Should NOT be valid (invalid amount - constructor defaults)', () => {
         const txInput = new TransactionInput();
