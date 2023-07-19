@@ -8,6 +8,7 @@ import KeyPair from "../lib/keyPair";
 import Transaction from "../lib/transaction";
 import TransactionType from "../lib/transactionType";
 import TransactionOutput from "../lib/transactionOutput";
+import Blockchain from "../lib/blockchain";
 
 const BLOCKCHAIN_SERVER = `${process.env.BLOCKCHAIN_SERVER}:${process.env.BLOCKCHAIN_PORT}/`;
 // mock miner wallet
@@ -31,9 +32,31 @@ async function mine(){
     }
     //
     // calculate reward 
-    function getRewardTx(): Transaction{
+    function getRewardTx(blockInfo: BlockInfo, nextBlock: Block): Transaction | undefined{
         //
-        let amount = 10; // TODO: implement reward calc
+        let amount = 0; 
+
+        // while there is block reward
+        if (blockInfo.difficulty <= blockInfo.maxDifficulty){
+            amount += Blockchain.getRewardAmount(blockInfo.difficulty);
+        }
+        
+        //
+        // sum all fees
+        const fees = nextBlock.transactions.map(tx => tx.getFee()).reduce((a, b) => a + b); 
+        // check 
+        const feeCheck = nextBlock.transactions.length * blockInfo.feePerTx;
+        // skip if fees are insufficient
+        if (fees < feeCheck) {
+            console.log("Low fees. Awaiting next block.");
+            setTimeout(() => {
+                mine();
+            }, 5000);
+            return;
+        }
+        // add fees to amount (reward + taxes)
+        amount += fees;
+
 
         // tx output
         const txo = new TransactionOutput({
@@ -42,25 +65,19 @@ async function mine(){
         } as TransactionOutput);
 
         // Add Tx reward
-        const tx = new Transaction({
-            type: TransactionType.FEE,
-            txOutputs: [txo]
-        }as Transaction);
-
-        // hash tx
-        tx.hash = tx.getHash();
-        // copy hash to output
-        tx.txOutputs[0].tx = tx.hash;
-        //
-        return tx;
+        return Transaction.fromReward(txo);;
     }
     //
     // create block
     const blockInfo = data as BlockInfo;
     // get new block
     const newBlock = Block.getFromInfo(blockInfo);
+    // get reward tx
+    const tx = getRewardTx(blockInfo, newBlock);
+    // skip if there is no reward tx
+    if(!tx) return;
     // add reward transaction
-    newBlock.transactions.push(getRewardTx());
+    newBlock.transactions.push(tx);
     // add miner
     newBlock.miner = minerWallet.publicKey;
     // generate hash

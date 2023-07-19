@@ -90,11 +90,12 @@ export default class Block{
      * Validates the Block
      * @param previousIndex number - last block index
      * @param previousHash string - last block hash
+     * @param feePerTx number - fees per transaction
      * @returns Validation - return if block is valid
      */
-    isValid(previousIndex: number, previousHash: string): Validation{
+    isValid(previousIndex: number, previousHash: string, feePerTx: number): Validation{
         // simple validation mock
-        if(this.index < 0 || previousIndex < 0 || !previousHash) return Block.INVALID_BLOCK; 
+        if(this.index < 0 || previousIndex < 0 || !previousHash || feePerTx < 1) return Block.INVALID_BLOCK; 
         // esle
         return Block.VALID_BLOCK;
     }

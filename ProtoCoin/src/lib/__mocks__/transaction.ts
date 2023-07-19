@@ -53,10 +53,33 @@ export default class Transaction{
      * Validates the Transaction 
      * @returns Validation - return if block is valid
      */
-    isValid(): Validation{
+    isValid(difficulty: number, totalFees: number): Validation{
         if(this.timestamp < 0) return Transaction.INVALID_TIMESTAMP;
         //
         // else - success
         return Transaction.VALID_TRANSACTION;
+    }
+
+
+    /**
+     * Generate reward transaction from output
+     * @param txo TransactionOutput
+     * @returns Transaction
+     */
+    static fromReward(txo: TransactionOutput): Transaction{
+        // Add Tx reward
+        const tx = new Transaction({
+            type: TransactionType.FEE,
+            txOutputs: [txo]
+        }as Transaction);
+
+        // force undefined 
+        tx.txInputs = undefined;
+        // hash tx
+        tx.hash = tx.getHash();
+        // copy hash to output
+        tx.txOutputs[0].tx = tx.hash;
+        //
+        return tx;
     }
 }

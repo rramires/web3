@@ -58,7 +58,7 @@ export default class Blockchain {
      */
     addTransaction(transaction: Transaction): Validation{
         // verify
-        const validation = transaction.isValid();
+        const validation = transaction.isValid(1, 10);
         if(!validation.success) return Blockchain.INVALID_TRANSACTION(validation.message);
         //
         // add transaction 

@@ -79,36 +79,6 @@ export default class Block{
     }
 
     /**
-     * Create the first block
-     * @param miner - string
-     * @returns Block - return genesis block
-     */
-    static genesis(miner: string): Block{
-        // TODO: calculate the reward
-        const reward = 10; 
-
-        // create transaction
-        const tx: Transaction = new Transaction();
-        tx.type = TransactionType.FEE;
-        tx.txOutputs = [new TransactionOutput({
-        amount: reward,
-        toAddress: miner
-        } as TransactionOutput)]
-        // hash tx
-        tx.hash = tx.getHash();
-        // add hash to output
-        tx.txOutputs[0].tx = tx.hash;
-
-        // create block
-        const block = new Block();
-        block.transactions = [tx];
-        block.previousHash = "0".repeat(Blockchain.DIFFICULTY_FACTOR) + "_this_is_the_genesis_block";
-        block.mine(1, miner);
-        //
-        return block;
-    }
-
-    /**
      * Return block from blockinfo 
      * @returns Block 
      */
@@ -172,9 +142,10 @@ export default class Block{
      * @param previousIndex number - last block index
      * @param previousHash string - last block hash
      * @param difficulty number - current difficulty
+     * @param feePerTx number - fees per transaction
      * @returns Validation - return if block is valid
      */
-    isValid(previousIndex: number, previousHash: string, difficulty: number): Validation{
+    isValid(previousIndex: number, previousHash: string, difficulty: number, feePerTx: number): Validation{
         // simple checks
         if(this.timestamp < 0) return Block.INVALID_TIMESTAMP;
         if(this.nonce < 1 || !this.miner) return Block.NO_MINED;
@@ -201,10 +172,10 @@ export default class Block{
             // check if the miner will receive the reward 
             if (!feeTxs[0].txOutputs.some(txo => txo.toAddress === this.miner)) return Block.FEE_TX_ISNT_MINER;
             //
-            // TODO: validate the amount of fees 
-            //
+            // calculate the amount of fees (filter exclude fee txs) 
+            const totalFees = feePerTx * this.transactions.filter(tx => tx.type !== TransactionType.FEE).length;
             // check if there are any invalid transactions
-            const validations = this.transactions.map(tx => tx.isValid()); // check all tx and get validations array
+            const validations = this.transactions.map(tx => tx.isValid(difficulty, totalFees)); // check all tx and get validations array
             const errors = validations.filter(v => !v.success).map(v => v.message); // filter invalids
             if (errors.length > 0) {
                 const errorsMessage = errors.reduce((prev, curr) => prev + curr); // concat errors

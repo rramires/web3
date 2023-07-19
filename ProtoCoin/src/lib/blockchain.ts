@@ -52,7 +52,15 @@ export default class Blockchain {
 
     /** There is no next block. */
     static INVALID_NO_NEXT_BLOCK: Validation = new Validation(true, "There is no next block.");
-    
+
+    /**
+     * Get reward amount
+     * @param difficulty 
+     * @returns number
+     */
+    static getRewardAmount(difficulty: number): number {
+        return (64 - difficulty) * 10;
+    }
 
     // props
     chain: Block[];
@@ -73,8 +81,10 @@ export default class Blockchain {
     constructor(miner: string){
         // start mempool
         this.mempool = [];
+        // start chain
+        this.chain = [];
         // start chain array with the genesis block
-        this.chain = [Block.genesis(miner)];
+        this.chain = [this.genesis(miner)];
         this.nextIndex++;
         //console.log('The blockchain starts with: ', this.chain);
     }
@@ -87,8 +97,34 @@ export default class Blockchain {
         return this.chain[this.chain.length -1];
     }
 
+    /**
+     * Calculate difficulty
+     * @returns number
+     */
     getDifficulty(): number{
         return Math.ceil(this.chain.length / Blockchain.DIFFICULTY_FACTOR) + 1;
+    }
+
+    /**
+     * Create the first block
+     * @param miner - string
+     * @returns Block - return genesis block
+     */
+    genesis(miner: string): Block{
+        // calculate the reward
+        const reward = Blockchain.getRewardAmount(this.getDifficulty()); 
+        // create transaction
+        const tx = Transaction.fromReward(new TransactionOutput({
+                                        amount: reward,
+                                        toAddress: miner
+                                    } as TransactionOutput));
+        // create block
+        const block = new Block();
+        block.transactions = [tx];
+        block.previousHash = "0".repeat(Blockchain.DIFFICULTY_FACTOR) + "_this_is_the_genesis_block";
+        block.mine(1, miner);
+        //
+        return block;
     }
 
     /**
@@ -96,7 +132,7 @@ export default class Blockchain {
      */
     addTransaction(transaction: Transaction): Validation{
         // verify Tx
-        const validation = transaction.isValid();
+        const validation = transaction.isValid(this.getDifficulty(), this.getFeePerTx());
         if(!validation.success) return Blockchain.INVALID_TRANSACTION(validation.message);
         // verify Tx duplicated in mempool
         if(this.mempool.some(tx => tx.hash === transaction.hash)) return Blockchain.INVALID_TX_DUPLICATED;
@@ -127,9 +163,6 @@ export default class Blockchain {
             }
         }
         //
-        //TODO: Implement fee validation
-
-        //
         // check if transaction exists
         /* 
             *** it gets really slow over time
@@ -150,7 +183,7 @@ export default class Blockchain {
         if (!nextBlock) return Blockchain.INVALID_NO_NEXT_BLOCK;
         // 
         // verify
-        const validation = block.isValid(nextBlock.nextIndex -1, nextBlock.previousHash, nextBlock.difficulty)
+        const validation = block.isValid(nextBlock.nextIndex -1, nextBlock.previousHash, nextBlock.difficulty, nextBlock.feePerTx)
         if(!validation.success) return Blockchain.INVALID_BLOCK(validation.message);
         //
         // removes the transactions that will be added from the mempool
@@ -215,7 +248,7 @@ export default class Blockchain {
             const currentBlock = this.chain[i];
             const previousBlock = this.chain[i - 1];
             // compare the current with the previous
-            const validation: Validation = currentBlock.isValid(previousBlock.index, previousBlock.hash, this.getDifficulty());
+            const validation: Validation = currentBlock.isValid(previousBlock.index, previousBlock.hash, this.getDifficulty(), this.getFeePerTx());
             // returns block number and error message found
             if(!validation.success) return Blockchain.INVALID_BLOCK_NO(currentBlock.index, validation.message);
         }   
