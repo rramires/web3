@@ -19,7 +19,7 @@ app.use(express.json());
  * Blockchain owner wallet
  */
 const wallet = new KeyPair(process.env.BLOCKCHAIN_WALLET);
-
+console.log("Core Wallet:", wallet.publicKey);
 
 
 /**

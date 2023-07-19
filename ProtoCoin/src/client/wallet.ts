@@ -125,8 +125,9 @@ async function getBalance(){
         console.log(`You don't have a wallet yet.`);
         return preMenu();
     }
-    // TODO: Get balance via API
-    console.log("This option isn't implemented yet!");
+    // get balance
+    const { data } = await axios.get(`${BLOCKCHAIN_SERVER}:${BLOCKCHAIN_PORT}/wallets/${myWalletPub}`);
+    console.log("Balance: " + data.balance);
     //
     preMenu();
 }
@@ -172,27 +173,46 @@ function sendTx(){
                 return preMenu();
             }
 
-            // create the transaction 
-            const tx = new Transaction()
-            tx.timestamp = Date.now();
-            tx.type = TransactionType.REGULAR;
-            // inputs
-            tx.txInputs = [new TransactionInput({
-                amount, // get amount
-                fromAddress: myWalletPub, // get the destiny
-                previousTx: utxo[0].tx //FIXME: must be improved
-            } as TransactionInput)];
-            // outputs
-            tx.txOutputs = [new TransactionOutput({
+            /** 
+             * Transfer funds 
+             */
+
+            // To simplify the algorithm, create txinputs for each output
+            // *** In the real world this would make blockchain grow unnecessarily
+            const txInputs = utxo.map(txo => TransactionInput.fromTxo(txo));
+            // sign inputs
+            txInputs.forEach((txi, index, arr) => arr[index].sign(myWalletPriv));
+
+            // Funds transfer transaction
+            const txOutputs = [] as TransactionOutput[];
+            txOutputs.push(new TransactionOutput({
                 toAddress: toWallet,
-                amount // get amount
-            } as TransactionOutput)];
-            // sign the transaction with the private key
-            tx.txInputs[0].sign(myWalletPriv);
-            // generate transaction hash
+                amount
+            } as TransactionOutput));
+
+            // Remaining balance transaction
+            const remainingBalance = balance - amount - fee;
+            txOutputs.push(new TransactionOutput({
+                toAddress: myWalletPub,
+                amount: remainingBalance
+            } as TransactionOutput));
+
+            // create the transaction with the new inputs and outputs
+            const tx = new Transaction({
+                txInputs,
+                txOutputs
+            } as Transaction);
+
+            // hash
             tx.hash = tx.getHash();
-            // copy hash to output
-            tx.txOutputs[0].tx = tx.getHash();
+            // copy tx hash to outputs
+            tx.txOutputs.forEach((txo, index, arr) => arr[index].tx = tx.hash);
+            //
+            console.log(tx);
+            console.log("Remaining Balance: " + remainingBalance);
+
+            /** End transfer funds */
+
             // send to mempool
             try{
                 const txResponse = await axios.post(`${BLOCKCHAIN_SERVER}:${BLOCKCHAIN_PORT}/transactions/`, tx);
