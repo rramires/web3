@@ -4,6 +4,8 @@ import BlockInfo from "./blockInfo";
 import Transaction from "./transaction";
 import TransactionType from "./transactionType";
 import TransactionSearch from "./transactionSearch";
+import TransactionInput from "./transactionInput";
+import TransactionOutput from "./transactionOutput";
 
 /**
  * Blockchain class
@@ -36,6 +38,9 @@ export default class Blockchain {
 
     /** There is a pending transaction from the same wallet. */
     static PENDING_TX_SAME_WALLET: Validation = new Validation(false, "There is a pending transaction from the same wallet.");
+
+    /** Invalid tx: the TXO is already spent or unexistent. */
+    static INVALID_TXO_SPENT_OR_NO_EXISTENT: Validation = new Validation(false, "Invalid tx: the TXO is already spent or unexistent");
 
     /** Transaction added. */
     static TRANSACTION_ADDED: Validation = new Validation(true, "Transaction added.");
@@ -111,9 +116,19 @@ export default class Blockchain {
             // skip
             if(pendingTx && pendingTx.length > 0) return Blockchain.PENDING_TX_SAME_WALLET;
             //
-            //TODO: Validate the origin of the funds (UTXOs)
-
+            // validate the origin of the funds (UTXOs)
+            const utxo = this.getUtxo(from); // get unspent 
+            for(let i = 0; i < transaction.txInputs.length; i++){
+                const txi = transaction.txInputs[i]; 
+                // checks if the UTXO exists and if it has enough balance
+                if (utxo.findIndex(txo => txo.tx === txi.previousTx && txo.amount >= txi.amount) === -1){
+                    return Blockchain.INVALID_TXO_SPENT_OR_NO_EXISTENT;
+                }    
+            }
         }
+        //
+        //TODO: Implement fee validation
+
         //
         // check if transaction exists
         /* 
@@ -230,5 +245,49 @@ export default class Blockchain {
             feePerTx,
             transactions
         } as BlockInfo
+    }
+
+    getTxInputs(wallet: string): (TransactionInput | undefined)[] {
+        return this.chain.map(b => b.transactions) // all transactions in blocks
+                        .flat() // to single array
+                        .filter(tx => tx.txInputs && tx.txInputs.length) // only those with tx inputs
+                        .map(tx => tx.txInputs) // all tx inputs
+                        .flat() // to single array
+                        .filter(txi => txi!.fromAddress === wallet); // filter by wallet
+    }
+
+    getTxOutputs(wallet: string): TransactionOutput[] {
+        return this.chain.map(b => b.transactions) // all transactions in blocks
+                        .flat() // to single array
+                        .filter(tx => tx.txOutputs && tx.txOutputs.length) // only those with tx outputs
+                        .map(tx => tx.txOutputs) // all tx outputs
+                        .flat() // to single array
+                        .filter(txo => txo.toAddress === wallet); // filter by wallet
+    }
+
+    getUtxo(wallet: string): TransactionOutput[] {
+        const txIns = this.getTxInputs(wallet); // get the expenses 
+        const txOuts = this.getTxOutputs(wallet); // get the receipts
+
+        // if it was never spent
+        if (!txIns || !txIns.length) return txOuts;
+
+        // serarch spents
+        txIns.forEach(txi => {
+            // remove what has already been spent
+            const index = txOuts.findIndex(txo => txo.amount === txi!.amount);
+            txOuts.splice(index, 1);
+        })
+        // return what was not spent
+        return txOuts;
+    }
+
+    getBalance(wallet: string): number {
+        // get unspent 
+        const utxo = this.getUtxo(wallet);
+        // skip
+        if (!utxo || !utxo.length) return 0;
+        // accumulate and return total
+        return utxo.reduce((a, b) => a + b.amount, 0);
     }
 }
