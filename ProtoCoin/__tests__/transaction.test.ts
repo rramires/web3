@@ -15,6 +15,9 @@ describe("Block tests", () => {
     let alice: KeyPair;
     let bob: KeyPair;
 
+    const mockDifficulty: number = 1;
+    const mockFee: number = 1;
+
     beforeAll(() => {
         alice = new KeyPair();
         bob = new KeyPair();
@@ -31,7 +34,7 @@ describe("Block tests", () => {
               tx.hash = tx.getHash();
               tx.txOutputs[0].tx = tx.hash;
 
-        const valid: Validation = tx.isValid();
+        const valid: Validation = tx.isValid(mockDifficulty, mockFee);
         // test
         expect(valid).toEqual(Transaction.VALID_TRANSACTION);
     })
@@ -50,7 +53,7 @@ describe("Block tests", () => {
         tx.hash = tx.getHash();
         tx.txOutputs[0].tx = tx.hash;
 
-        const valid: Validation = tx.isValid();
+        const valid: Validation = tx.isValid(mockDifficulty, mockFee);
         // test
         expect(valid).toEqual(Transaction.VALID_TRANSACTION);
     })
@@ -62,7 +65,7 @@ describe("Block tests", () => {
                     } as Transaction);
         tx.timestamp = -1 // invalid
 
-        const valid: Validation = tx.isValid();
+        const valid: Validation = tx.isValid(mockDifficulty, mockFee);
         // test
         expect(valid).toEqual(Transaction.INVALID_TIMESTAMP);
     })
@@ -82,7 +85,7 @@ describe("Block tests", () => {
 
         //
         
-        const valid: Validation = tx.isValid();
+        const valid: Validation = tx.isValid(mockDifficulty, mockFee);
         // test
         expect(valid).toEqual(Transaction.INVALID_INPUT_TX(TransactionInput.INVALID_AMOUNT.message));
     }) 
@@ -94,7 +97,7 @@ describe("Block tests", () => {
                     } as Transaction);
         tx.hash = "invalid"; // invalid
 
-        const valid: Validation = tx.isValid();
+        const valid: Validation = tx.isValid(mockDifficulty, mockFee);
         // test
         expect(valid).toEqual(Transaction.INVALID_HASH);
     })
@@ -109,7 +112,7 @@ describe("Block tests", () => {
               tx.hash = tx.getHash();
               tx.txOutputs[0].tx = "invalidHash"; // invalid
 
-        const valid: Validation = tx.isValid();
+        const valid: Validation = tx.isValid(mockDifficulty, mockFee);
         // test
         expect(valid).toEqual(Transaction.INVALID_TXO_REF_HASH);
     })
@@ -122,7 +125,7 @@ describe("Block tests", () => {
               // invalid NO tx.txOutputs
               tx.hash = tx.getHash();
 
-        const valid: Validation = tx.isValid();
+        const valid: Validation = tx.isValid(mockDifficulty, mockFee);
         // test
         expect(valid).toEqual(Transaction.INVALID_TXO);
     })
@@ -140,7 +143,7 @@ describe("Block tests", () => {
               tx.hash = tx.getHash();
               tx.txOutputs[0].tx = tx.hash;
 
-        const valid: Validation = tx.isValid();
+        const valid: Validation = tx.isValid(mockDifficulty, mockFee);
         // test
         expect(valid).toEqual(Transaction.INVALID_TXO_GREATER);
     })

@@ -4,6 +4,7 @@ import Validation from "../src/lib/validation";
 import Transaction from "../src/lib/transaction";
 import TransactionInput from "../src/lib/transactionInput";
 import KeyPair from "../src/lib/keyPair";
+import TransactionOutput from "../src/lib/transactionOutput";
 
 
 // mocks
@@ -40,11 +41,23 @@ describe("Blockchain tests", () => {
     test("Should add transaction", () =>{
         const blockchain = new Blockchain(alice.publicKey);
 
-        // create tx
-        const tx = new Transaction({
-                        txInputs: [new TransactionInput()]
-                    } as Transaction);
-        tx.hash = "test";
+        // let's steal the genesis block output transaction 
+        const txo = blockchain.chain[0].transactions[0];
+
+        const tx = new Transaction();
+        tx.hash = 'tx';
+        tx.txInputs = [new TransactionInput({
+            amount: 10,
+            previousTx: txo.hash,
+            fromAddress: alice.publicKey,
+            signature: 'abc'
+        } as TransactionInput)]
+
+        tx.txOutputs = [new TransactionOutput({
+            amount: 10,
+            toAddress: 'abc'
+        } as TransactionOutput)]
+
         // add tx
         const validation: Validation = blockchain.addTransaction(tx);
         // test
