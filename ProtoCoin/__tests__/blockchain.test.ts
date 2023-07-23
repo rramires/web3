@@ -111,6 +111,28 @@ describe("Blockchain tests", () => {
         expect(validation).toEqual(Blockchain.PENDING_TX_SAME_WALLET);
     })
 
+    test('Should NOT add transaction (invalid UTXO)', () => {
+        const blockchain = new Blockchain(alice.publicKey);
+
+        const tx = new Transaction();
+        tx.hash = 'tx';
+        tx.txInputs = [new TransactionInput({
+            amount: 10,
+            previousTx: 'wrong', // invalid
+            fromAddress: alice.publicKey,
+            signature: 'abc'
+        } as TransactionInput)]
+
+        tx.txOutputs = [new TransactionOutput({
+            amount: 10,
+            toAddress: 'abc'
+        } as TransactionOutput)]
+
+        const validation = blockchain.addTransaction(tx);
+        // test
+        expect(validation).toEqual(Blockchain.INVALID_TXO_SPENT_OR_NO_EXISTENT);
+    })
+
     test("Should NOT add invalid transaction", () =>{
         const blockchain = new Blockchain(alice.publicKey);
 
@@ -359,5 +381,50 @@ describe("Blockchain tests", () => {
         const blockInfo = blockchain.getNextBlock();
         // test
         expect(blockInfo).toBeNull();
+    })
+
+    test('Should get balance', () => {
+        const blockchain = new Blockchain(alice.publicKey);
+        const balance = blockchain.getBalance(alice.publicKey);
+        expect(balance).toBeGreaterThan(0);
+    })
+
+    test('Should get zero balance', () => {
+        const blockchain = new Blockchain(alice.publicKey);
+        const balance = blockchain.getBalance(bob.publicKey);
+        expect(balance).toEqual(0);
+    })
+
+    test('Should get UTXO', () => {
+        const blockchain = new Blockchain(alice.publicKey);
+        const txo = blockchain.chain[0].transactions[0];
+
+        const tx = new Transaction();
+        tx.hash = 'tx';
+        tx.txInputs = [new TransactionInput({
+            amount: 10,
+            previousTx: txo.hash,
+            fromAddress: alice.publicKey,
+            signature: 'abc'
+        } as TransactionInput)]
+
+        tx.txOutputs = [
+            new TransactionOutput({
+                amount: 5,
+                toAddress: 'abc'
+            } as TransactionOutput),
+            new TransactionOutput({
+                amount: 4,
+                toAddress: alice.publicKey
+            } as TransactionOutput)
+        ]
+
+        blockchain.chain.push(new Block({
+            index: 1,
+            transactions: [tx]
+        } as Block))
+
+        const utxo = blockchain.getUtxo(alice.publicKey)
+        expect(utxo.length).toBeGreaterThan(0);
     })
 });

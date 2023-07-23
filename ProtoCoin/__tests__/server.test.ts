@@ -111,8 +111,6 @@ describe("Blockchain Server Tests", () => {
         const response = await request(app)
                                 .get('/transactions/');
 
-        console.log("response.body:", response.body);
-
         expect(response.status).toEqual(200);
         expect(response.body.total).toEqual(1); 
     }) 

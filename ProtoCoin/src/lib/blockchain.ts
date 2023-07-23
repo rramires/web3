@@ -163,13 +163,6 @@ export default class Blockchain {
             }
         }
         //
-        // check if transaction exists
-        /* 
-            *** it gets really slow over time
-            // in blockchain - some block with some transaction with the same hash 
-            if(this.chain.some(b => b.transactions.some(tx => tx.hash === transaction.hash))) 
-        */
-        //
         // add transaction 
         this.mempool.push(transaction);
         return Blockchain.TRANSACTION_ADDED;
