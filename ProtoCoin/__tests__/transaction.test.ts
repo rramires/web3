@@ -17,6 +17,7 @@ describe("Block tests", () => {
 
     const mockDifficulty: number = 1;
     const mockFee: number = 1;
+    const mockTx: string = "8eba6c75bbd12d9e21f657b76726312aad08f2d3a10aee52d2b1017e6248c186";
 
     beforeAll(() => {
         alice = new KeyPair();
@@ -146,5 +147,61 @@ describe("Block tests", () => {
         const valid: Validation = tx.isValid(mockDifficulty, mockFee);
         // test
         expect(valid).toEqual(Transaction.INVALID_TXO_GREATER);
+    })
+
+    test('Should get fee', () => {
+        
+        const txIn = new TransactionInput({
+            amount: 11,
+            fromAddress: alice.publicKey,
+            previousTx: mockTx
+        } as TransactionInput)
+        txIn.sign(alice.privateKey);
+
+        const txOut = new TransactionOutput({
+            amount: 10,
+            toAddress: bob.publicKey
+        } as TransactionOutput)
+
+        const tx = new Transaction({
+            txInputs: [txIn],
+            txOutputs: [txOut]
+        } as Transaction)
+
+        const result = tx.getFee();
+        expect(result).toBeGreaterThan(0);
+    })
+
+    test('Should get zero fee', () => {
+        const tx = new Transaction();
+        tx.txInputs = undefined;
+        const result = tx.getFee();
+        expect(result).toEqual(0);
+    })
+
+    test('Should create from reward', () => {
+        const tx = Transaction.fromReward({
+            amount: 10,
+            toAddress: alice.publicKey,
+            tx: mockTx
+        } as TransactionOutput)
+
+        const result = tx.isValid(mockDifficulty, mockFee);
+        expect(result.success).toBeTruthy();
+    })
+
+    test('Should NOT be valid (fee excess)', () => {
+        const txOut = new TransactionOutput({
+            amount: Number.MAX_VALUE,
+            toAddress: bob.publicKey
+        } as TransactionOutput)
+
+        const tx = new Transaction({
+            type: TransactionType.FEE,
+            txOutputs: [txOut]
+        } as Transaction)
+
+        const result = tx.isValid(mockDifficulty, mockFee);
+        expect(result.success).toBeFalsy();
     })
 });
