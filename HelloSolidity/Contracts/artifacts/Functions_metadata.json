@@ -1,0 +1,72 @@
+{
+	"compiler": {
+		"version": "0.8.18+commit.87f61d96"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "getAge",
+				"outputs": [
+					{
+						"internalType": "int8",
+						"name": "",
+						"type": "int8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "int8",
+						"name": "newAge",
+						"type": "int8"
+					}
+				],
+				"name": "setAge",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Contracts/Functions.sol": "Functions"
+		},
+		"evmVersion": "paris",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Contracts/Functions.sol": {
+			"keccak256": "0xe7d0509aae91e0ca04720c8a3a13b9f73b7d503957fba124a5a3f0d7b5a59482",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://abb0c4d8dd2a51398dda7cd0e5266b1be1f8ce513c077d723b1b7f949610f5b0",
+				"dweb:/ipfs/Qmb7ajzPvoBNLKXMMWKMYi3zbMTAHFvU6YuwBwadScFwNs"
+			]
+		}
+	},
+	"version": 1
+}
