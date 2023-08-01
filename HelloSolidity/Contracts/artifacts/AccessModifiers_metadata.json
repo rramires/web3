@@ -1,0 +1,59 @@
+{
+	"compiler": {
+		"version": "0.8.18+commit.87f61d96"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "publicValues",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Contracts/AccessModifiers.sol": "AccessModifiers"
+		},
+		"evmVersion": "paris",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Contracts/AccessModifiers.sol": {
+			"keccak256": "0x1d8ef9361a1a9ff94d16e373877d492ed933f4bebc5f63300da71c7f699c5957",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://af8341b64e4815905245467138ce26b51cbd6a98508fe7632e5e0c53f0238d26",
+				"dweb:/ipfs/QmXwQYHu9cXrP47v2sUqsrCroUU85FQ9dHjWBPCmfcYAEG"
+			]
+		}
+	},
+	"version": 1
+}
