@@ -1,0 +1,95 @@
+{
+	"compiler": {
+		"version": "0.8.18+commit.87f61d96"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "choice",
+				"outputs": [
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint8",
+						"name": "newChoice",
+						"type": "uint8"
+					}
+				],
+				"name": "choose",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint8",
+						"name": "number",
+						"type": "uint8"
+					}
+				],
+				"name": "play",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"choose(uint8)": {
+					"notice": "newChoice 1 = odd or 2 = even"
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Contracts/PickEvenOrOdd.sol": "PickEvenOrOdd"
+		},
+		"evmVersion": "paris",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Contracts/PickEvenOrOdd.sol": {
+			"keccak256": "0xd4ccbc7f77357886fd95e85c3f8fa4d6313915eb115b25b01fe17fcb6256c72e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://dedebf7f9d8734686ba5710d0317145a81ec60b75216f959b7ed893e765f7392",
+				"dweb:/ipfs/QmXxSzppmu6P3nNV8hXH1bF16ssTxKR1fdDejyg1qUrN6w"
+			]
+		}
+	},
+	"version": 1
+}
