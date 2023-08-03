@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.18+commit.87f61d96"
+		"version": "0.8.12+commit.f00d7308"
 	},
 	"language": "Solidity",
 	"output": {
@@ -10,9 +10,9 @@
 				"name": "choice",
 				"outputs": [
 					{
-						"internalType": "uint8",
+						"internalType": "string",
 						"name": "",
-						"type": "uint8"
+						"type": "string"
 					}
 				],
 				"stateMutability": "view",
@@ -21,9 +21,9 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint8",
+						"internalType": "string",
 						"name": "newChoice",
-						"type": "uint8"
+						"type": "string"
 					}
 				],
 				"name": "choose",
@@ -42,9 +42,9 @@
 				"name": "play",
 				"outputs": [
 					{
-						"internalType": "bool",
+						"internalType": "string",
 						"name": "",
-						"type": "bool"
+						"type": "string"
 					}
 				],
 				"stateMutability": "view",
@@ -59,8 +59,8 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {
-				"choose(uint8)": {
-					"notice": "newChoice 1 = odd or 2 = even"
+				"choose(string)": {
+					"notice": "newChoice EVEN or ODD"
 				}
 			},
 			"version": 1
@@ -70,7 +70,7 @@
 		"compilationTarget": {
 			"Contracts/PickEvenOrOdd.sol": "PickEvenOrOdd"
 		},
-		"evmVersion": "paris",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -82,12 +82,36 @@
 		"remappings": []
 	},
 	"sources": {
-		"Contracts/PickEvenOrOdd.sol": {
-			"keccak256": "0xd4ccbc7f77357886fd95e85c3f8fa4d6313915eb115b25b01fe17fcb6256c72e",
+		"@openzeppelin/contracts/utils/Strings.sol": {
+			"keccak256": "0x3088eb2868e8d13d89d16670b5f8612c4ab9ff8956272837d8e90106c59c14a0",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://dedebf7f9d8734686ba5710d0317145a81ec60b75216f959b7ed893e765f7392",
-				"dweb:/ipfs/QmXxSzppmu6P3nNV8hXH1bF16ssTxKR1fdDejyg1qUrN6w"
+				"bzz-raw://b81d9ff6559ea5c47fc573e17ece6d9ba5d6839e213e6ebc3b4c5c8fe4199d7f",
+				"dweb:/ipfs/QmPCW1bFisUzJkyjroY3yipwfism9RRCigCcK1hbXtVM8n"
+			]
+		},
+		"@openzeppelin/contracts/utils/math/Math.sol": {
+			"keccak256": "0xe4455ac1eb7fc497bb7402579e7b4d64d928b846fce7d2b6fde06d366f21c2b3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://cc8841b3cd48ad125e2f46323c8bad3aa0e88e399ec62acb9e57efa7e7c8058c",
+				"dweb:/ipfs/QmSqE4mXHA2BXW58deDbXE8MTcsL5JSKNDbm23sVQxRLPS"
+			]
+		},
+		"@openzeppelin/contracts/utils/math/SignedMath.sol": {
+			"keccak256": "0xf92515413956f529d95977adc9b0567d583c6203fc31ab1c23824c35187e3ddc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c50fcc459e49a9858b6d8ad5f911295cb7c9ab57567845a250bf0153f84a95c7",
+				"dweb:/ipfs/QmcEW85JRzvDkQggxiBBLVAasXWdkhEysqypj9EaB6H2g6"
+			]
+		},
+		"Contracts/PickEvenOrOdd.sol": {
+			"keccak256": "0x4f2a1f568049a11dc55187c19c470ab3c228eff45e94c2085b81d00f6bdae7c9",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://36fc93cce2db0b69e4979ae32544aaed8729e12f5cbfdc940e1caaa46eff9e5b",
+				"dweb:/ipfs/QmeBucGp6oNRK4SGxqwb8Qd2Z1txarwK2LB3c5k12746Ei"
 			]
 		}
 	},
