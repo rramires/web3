@@ -1,13 +1,13 @@
 {
 	"compiler": {
-		"version": "0.8.12+commit.f00d7308"
+		"version": "0.8.18+commit.87f61d96"
 	},
 	"language": "Solidity",
 	"output": {
 		"abi": [
 			{
 				"inputs": [],
-				"name": "choice",
+				"name": "choicePlayer1",
 				"outputs": [
 					{
 						"internalType": "string",
@@ -32,19 +32,39 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint8",
-						"name": "number",
-						"type": "uint8"
-					}
-				],
-				"name": "play",
+				"inputs": [],
+				"name": "gameStatus",
 				"outputs": [
 					{
 						"internalType": "string",
 						"name": "",
 						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint8",
+						"name": "move",
+						"type": "uint8"
+					}
+				],
+				"name": "play",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "player1",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -60,7 +80,10 @@
 			"kind": "user",
 			"methods": {
 				"choose(string)": {
-					"notice": "newChoice EVEN or ODD"
+					"notice": "Player 1 - choice EVEN or ODD "
+				},
+				"play(uint8)": {
+					"notice": "Player 1 or 2 - move 1 or 2 values"
 				}
 			},
 			"version": 1
@@ -70,7 +93,7 @@
 		"compilationTarget": {
 			"Contracts/PickEvenOrOdd.sol": "PickEvenOrOdd"
 		},
-		"evmVersion": "london",
+		"evmVersion": "paris",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -107,11 +130,11 @@
 			]
 		},
 		"Contracts/PickEvenOrOdd.sol": {
-			"keccak256": "0x4f2a1f568049a11dc55187c19c470ab3c228eff45e94c2085b81d00f6bdae7c9",
+			"keccak256": "0xa93eff9b809590fc0034f109dac06c76325f2e7abc025cf55cf8bf46f2850921",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://36fc93cce2db0b69e4979ae32544aaed8729e12f5cbfdc940e1caaa46eff9e5b",
-				"dweb:/ipfs/QmeBucGp6oNRK4SGxqwb8Qd2Z1txarwK2LB3c5k12746Ei"
+				"bzz-raw://dcd58c8da7243e99d20aa894aa2de8e1497b953448b45e8a6b81ab79a256477e",
+				"dweb:/ipfs/QmNiGcJ87McLQJfSySNrUV1QASdLEwyUFTsCiGvmeLK3Bz"
 			]
 		}
 	},
