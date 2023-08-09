@@ -1,0 +1,76 @@
+{
+	"compiler": {
+		"version": "0.8.7+commit.e28d00a7"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "enum JoKenPo.Options",
+						"name": "newChoice",
+						"type": "uint8"
+					}
+				],
+				"name": "play",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "status",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"play(uint8)": {
+					"notice": "The game param newChoice = 0, 1, 2 or 3 "
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Contracts/JoKenPo.sol": "JoKenPo"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Contracts/JoKenPo.sol": {
+			"keccak256": "0x41c075238e194a6f58ace62560ca20712f7d614562fc9c105851e56abf03cc9b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://568f2b608aeb5bd1f6ea2c3ffaf38281b10e4c3721a7af351d4b9ba73eb792cd",
+				"dweb:/ipfs/QmTBZoZzUdFELUFjY5z9yqFiBpYegFES8djwkH3dHnpoQy"
+			]
+		}
+	},
+	"version": 1
+}
