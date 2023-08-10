@@ -1,10 +1,15 @@
 {
 	"compiler": {
-		"version": "0.8.7+commit.e28d00a7"
+		"version": "0.8.18+commit.87f61d96"
 	},
 	"language": "Solidity",
 	"output": {
 		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
 			{
 				"inputs": [
 					{
@@ -16,6 +21,19 @@
 				"name": "play",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "secretFunction",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -40,8 +58,14 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {
+				"constructor": {
+					"notice": "Contract constructor"
+				},
 				"play(uint8)": {
 					"notice": "The game param newChoice = 0, 1, 2 or 3 "
+				},
+				"secretFunction()": {
+					"notice": "Sample, only contract owner access"
 				}
 			},
 			"version": 1
@@ -51,7 +75,7 @@
 		"compilationTarget": {
 			"Contracts/JoKenPo.sol": "JoKenPo"
 		},
-		"evmVersion": "london",
+		"evmVersion": "paris",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -64,11 +88,11 @@
 	},
 	"sources": {
 		"Contracts/JoKenPo.sol": {
-			"keccak256": "0x41c075238e194a6f58ace62560ca20712f7d614562fc9c105851e56abf03cc9b",
+			"keccak256": "0xdfe194992900389f868f077177132c754b36137249887cdb9261a7f768ce7061",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://568f2b608aeb5bd1f6ea2c3ffaf38281b10e4c3721a7af351d4b9ba73eb792cd",
-				"dweb:/ipfs/QmTBZoZzUdFELUFjY5z9yqFiBpYegFES8djwkH3dHnpoQy"
+				"bzz-raw://77fad707c8904ade8d10a6eca0c97c7f4b26389b41ec4a9f126c36d1b8d43d0d",
+				"dweb:/ipfs/QmZ4ThMyqWKmcstsR7xxm8VX9wjtbhbHthPWJyxHtnHEvY"
 			]
 		}
 	},

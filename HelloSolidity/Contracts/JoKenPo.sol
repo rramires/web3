@@ -14,6 +14,28 @@ contract JoKenPo {
     // The game status
     string public status = "";
 
+    // Contract owner
+    address private immutable owner;
+
+
+    /**
+     * Contract constructor
+     */
+    constructor(){
+        // get address of who deployed this contract
+        owner = msg.sender;
+    }
+
+
+    /**
+     * Sample, only contract owner access
+     */
+    function secretFunction() public view returns (string memory){
+        require(owner == msg.sender, "You don't have permissions to access this.");
+        return "Hello... from the secret function!";
+    }
+
+
     /**
      * Set status
      * Param newStatus string
