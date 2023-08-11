@@ -15,7 +15,7 @@ contract JoKenPo {
     string public status = "";
 
     // Contract owner
-    address private immutable owner;
+    address payable private immutable owner;
 
 
     /**
@@ -23,7 +23,7 @@ contract JoKenPo {
      */
     constructor(){
         // get address of who deployed this contract
-        owner = msg.sender;
+        owner = payable(msg.sender);
     }
 
 
@@ -39,10 +39,16 @@ contract JoKenPo {
 
 
     /**
-     * Set status
+     * Finish Game
      * Param newStatus string
      */
-    function setStatus(string memory newStatus) private {
+    function finishGame(string memory newStatus) private {
+        // Get contract address
+        address contractAddr = address(this);
+        // Transfer 10% to owner
+        owner.transfer((contractAddr.balance / 100) * 10);
+
+        // Status
         status = newStatus;
         // Reset
         player1 = address(0);
@@ -69,27 +75,27 @@ contract JoKenPo {
         }
         // If player 1 WON
         else if(choice1 == Options.ROCK && newChoice == Options.SCISSORS){ 
-            setStatus("Rock breaks Scissors. Player 1 WON!");
+            finishGame("Rock breaks Scissors. Player 1 WON!");
         }
         else if(choice1 == Options.PAPER && newChoice == Options.ROCK){ 
-            setStatus("Paper wraps Rock. Player 1 WON!");
+            finishGame("Paper wraps Rock. Player 1 WON!");
         }
         else if(choice1 == Options.SCISSORS && newChoice == Options.PAPER){ 
-            setStatus("Scissors cuts Paper. Player 1 WON!");
+            finishGame("Scissors cuts Paper. Player 1 WON!");
         }
         // If player 2 WON
         else if(choice1 == Options.SCISSORS && newChoice == Options.ROCK){ 
-            setStatus("Rock breaks Scissors. Player 2 WON!");
+            finishGame("Rock breaks Scissors. Player 2 WON!");
         }
         else if(choice1 == Options.ROCK && newChoice == Options.PAPER){ 
-            setStatus("Paper wraps Rock. Player 2 WON!");
+            finishGame("Paper wraps Rock. Player 2 WON!");
         }
         else if(choice1 == Options.PAPER && newChoice == Options.SCISSORS){ 
-            setStatus("Scissors cuts Paper. Player 2 WON!");
+            finishGame("Scissors cuts Paper. Player 2 WON!");
         }
         // If there was a tie
         else {
-            setStatus("Draw game!");
+            finishGame("Draw game!");
         }
     }
 }
