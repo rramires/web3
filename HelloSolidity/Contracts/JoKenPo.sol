@@ -42,12 +42,16 @@ contract JoKenPo {
      * Finish Game
      * Param newStatus string
      */
-    function finishGame(string memory newStatus) private {
-        // Get contract address
-        address contractAddr = address(this);
-        // Transfer 10% to owner
-        owner.transfer((contractAddr.balance / 100) * 10);
-
+    function finishGame(address winner, string memory newStatus) private {
+        // If there's a winner
+        if(winner != address(0)){
+            // Get contract address
+            address contractAddr = address(this);
+            // Transfer 90% to winner
+            payable(winner).transfer((contractAddr.balance / 100) * 90);
+            // Transfer the rest to the owner
+            owner.transfer(contractAddr.balance);
+        }
         // Status
         status = newStatus;
         // Reset
@@ -75,27 +79,27 @@ contract JoKenPo {
         }
         // If player 1 WON
         else if(choice1 == Options.ROCK && newChoice == Options.SCISSORS){ 
-            finishGame("Rock breaks Scissors. Player 1 WON!");
+            finishGame(player1, "Rock breaks Scissors. Player 1 WON!");
         }
         else if(choice1 == Options.PAPER && newChoice == Options.ROCK){ 
-            finishGame("Paper wraps Rock. Player 1 WON!");
+            finishGame(player1, "Paper wraps Rock. Player 1 WON!");
         }
         else if(choice1 == Options.SCISSORS && newChoice == Options.PAPER){ 
-            finishGame("Scissors cuts Paper. Player 1 WON!");
+            finishGame(player1, "Scissors cuts Paper. Player 1 WON!");
         }
         // If player 2 WON
         else if(choice1 == Options.SCISSORS && newChoice == Options.ROCK){ 
-            finishGame("Rock breaks Scissors. Player 2 WON!");
+            finishGame(msg.sender, "Rock breaks Scissors. Player 2 WON!");
         }
         else if(choice1 == Options.ROCK && newChoice == Options.PAPER){ 
-            finishGame("Paper wraps Rock. Player 2 WON!");
+            finishGame(msg.sender, "Paper wraps Rock. Player 2 WON!");
         }
         else if(choice1 == Options.PAPER && newChoice == Options.SCISSORS){ 
-            finishGame("Scissors cuts Paper. Player 2 WON!");
+            finishGame(msg.sender, "Scissors cuts Paper. Player 2 WON!");
         }
-        // If there was a tie
+        // If there is a tie, do not pay and accumulate
         else {
-            finishGame("Draw game!");
+            finishGame(address(0), "Draw game!");
         }
     }
 }

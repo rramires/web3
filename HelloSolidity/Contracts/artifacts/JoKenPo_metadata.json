@@ -88,11 +88,11 @@
 	},
 	"sources": {
 		"Contracts/JoKenPo.sol": {
-			"keccak256": "0xe41d984aeb22e11604e25559ebffcb55d16021256abf5de28d348385fd9a676f",
+			"keccak256": "0xa4c7122aacbf843bb19bcb303bf58cd1e222388b716700002283c0e4b3dc3e3f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://35259bbf6652db1d44218d25e10168a4e3265de6c4936c7321f0504b5b3e40a1",
-				"dweb:/ipfs/QmVPwQikBzcmuC3Xii8q28iuusza3K2sdZNngHbz5ktHib"
+				"bzz-raw://3863d9dc0c2a80d64c43a8c448201b632eabda856ac95087be89a4d4fcb9e2e7",
+				"dweb:/ipfs/QmUThrEzF5rfVAb5n3HM3hqazACBCXqaJrFizSVbkqDfjJ"
 			]
 		}
 	},
