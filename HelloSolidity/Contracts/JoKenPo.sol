@@ -28,11 +28,13 @@ contract JoKenPo {
 
 
     /**
-     * Sample, only contract owner access
+     * Get Balance - only contract owner access
      */
-    function secretFunction() public view returns (string memory){
+    function getBalance() public view returns (uint){
+        // *** Note: Contract balance is public, this a didactic example 
         require(owner == msg.sender, "You don't have permissions to access this.");
-        return "Hello... from the secret function!";
+        // returns the contract balance
+        return address(this).balance;
     }
 
 
@@ -51,11 +53,13 @@ contract JoKenPo {
      * The game
      * param newChoice = 0, 1, 2 or 3 
      */
-    function play(Options newChoice) public {
+    function play(Options newChoice) public payable {
 
         // Validation
         require(newChoice != Options.NONE, "Invalid choice!");
         require(player1 != msg.sender, "Await another player.");
+        // requires payment
+        require(msg.value >= 0.01 ether , "Invalid bid."); // accepts ether gwei wei
 
         // If player 1 
         if(choice1 == Options.NONE){

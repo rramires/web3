@@ -11,6 +11,19 @@
 				"type": "constructor"
 			},
 			{
+				"inputs": [],
+				"name": "getBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "enum JoKenPo.Options",
@@ -20,20 +33,7 @@
 				],
 				"name": "play",
 				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "secretFunction",
-				"outputs": [
-					{
-						"internalType": "string",
-						"name": "",
-						"type": "string"
-					}
-				],
-				"stateMutability": "view",
+				"stateMutability": "payable",
 				"type": "function"
 			},
 			{
@@ -61,11 +61,11 @@
 				"constructor": {
 					"notice": "Contract constructor"
 				},
+				"getBalance()": {
+					"notice": "Get Balance - only contract owner access"
+				},
 				"play(uint8)": {
 					"notice": "The game param newChoice = 0, 1, 2 or 3 "
-				},
-				"secretFunction()": {
-					"notice": "Sample, only contract owner access"
 				}
 			},
 			"version": 1
@@ -88,11 +88,11 @@
 	},
 	"sources": {
 		"Contracts/JoKenPo.sol": {
-			"keccak256": "0xdfe194992900389f868f077177132c754b36137249887cdb9261a7f768ce7061",
+			"keccak256": "0x85e3efb14050d0ce415b9eedea67573c75165925291082fa01c39757d9bc3631",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://77fad707c8904ade8d10a6eca0c97c7f4b26389b41ec4a9f126c36d1b8d43d0d",
-				"dweb:/ipfs/QmZ4ThMyqWKmcstsR7xxm8VX9wjtbhbHthPWJyxHtnHEvY"
+				"bzz-raw://8bf137ee5c69faac74eb651f2821ec2c7b3243ad9062f275f70f32604775cfd8",
+				"dweb:/ipfs/QmUGh3Nggn5nsNa8tU4fV1kh1TF2vDqaunYUqDH7JPNHpD"
 			]
 		}
 	},
