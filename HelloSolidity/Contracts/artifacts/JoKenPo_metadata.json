@@ -24,6 +24,31 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "getRanking",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "wallet",
+								"type": "address"
+							},
+							{
+								"internalType": "uint32",
+								"name": "wins",
+								"type": "uint32"
+							}
+						],
+						"internalType": "struct JoKenPo.Player[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "enum JoKenPo.Options",
@@ -34,6 +59,30 @@
 				"name": "play",
 				"outputs": [],
 				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "players",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "wallet",
+						"type": "address"
+					},
+					{
+						"internalType": "uint32",
+						"name": "wins",
+						"type": "uint32"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -64,6 +113,9 @@
 				"getBalance()": {
 					"notice": "Get Balance - only contract owner access"
 				},
+				"getRanking()": {
+					"notice": "Returns the sorted list of winners "
+				},
 				"play(uint8)": {
 					"notice": "The game param newChoice = 0, 1, 2 or 3 "
 				}
@@ -88,11 +140,11 @@
 	},
 	"sources": {
 		"Contracts/JoKenPo.sol": {
-			"keccak256": "0xa4c7122aacbf843bb19bcb303bf58cd1e222388b716700002283c0e4b3dc3e3f",
+			"keccak256": "0x2f007d4e0b2165b8912e2cb681a0a602026a97e4f9b46b95ab850bdd584dc9ad",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3863d9dc0c2a80d64c43a8c448201b632eabda856ac95087be89a4d4fcb9e2e7",
-				"dweb:/ipfs/QmUThrEzF5rfVAb5n3HM3hqazACBCXqaJrFizSVbkqDfjJ"
+				"bzz-raw://3fcd88ae3dfe3e9af4700596423ac3a1628dbbf6df0e1362aad428425762614a",
+				"dweb:/ipfs/QmYCVFdPqNtchVtoHctcotgtakTpZ7hEpxdUpc7aKh5Lxo"
 			]
 		}
 	},

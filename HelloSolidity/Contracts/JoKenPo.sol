@@ -17,6 +17,15 @@ contract JoKenPo {
     // Contract owner
     address payable private immutable owner;
 
+    // Player struct
+    struct Player{
+        address wallet;
+        uint32 wins;
+    }
+
+    // Players's list
+    Player[] public players;
+
 
     /**
      * Contract constructor
@@ -39,6 +48,21 @@ contract JoKenPo {
 
 
     /**
+     * Adds to winner or increase win
+     */
+    function updateWinners(address winner) private {
+        for(uint i = 0; i < players.length; i++){
+            // if exists
+            if(players[i].wallet == winner){
+                players[i].wins++;
+                return; // Skip for with return. 
+            }
+        }
+        players.push(Player(winner, 1));
+    }
+
+
+    /**
      * Finish Game
      * Param newStatus string
      */
@@ -47,17 +71,23 @@ contract JoKenPo {
         if(winner != address(0)){
             // Get contract address
             address contractAddr = address(this);
+            // Transfer 10% to owner
+            owner.transfer((contractAddr.balance / 100) * 10);
             // Transfer 90% to winner
             payable(winner).transfer((contractAddr.balance / 100) * 90);
-            // Transfer the rest to the owner
-            owner.transfer(contractAddr.balance);
         }
+
+        // add to winners list
+        updateWinners(winner);
+
         // Status
         status = newStatus;
+
         // Reset
         player1 = address(0);
         choice1 = Options.NONE;
     }
+
 
     /**
      * The game
@@ -100,6 +130,41 @@ contract JoKenPo {
         // If there is a tie, do not pay and accumulate
         else {
             finishGame(address(0), "Draw game!");
+        }
+    }
+
+
+    /**
+     * Returns the sorted list of winners 
+     */
+    function getRanking() public view returns(Player[] memory){
+        if(players.length < 2){
+            return players;
+        }
+        else{ 
+            // *** I'm uses Bubble Sort for simplicity 
+            //     This a didactic example - This is an inefficient sort method
+            // Create new array
+            Player[] memory ranking = new Player[](players.length);
+            // Copy elements
+            for(uint i = 0; i < players.length; i++){
+                ranking[i] = players[i];
+            }
+            // Inverse Bubble Sort
+            for(uint i = 0; i < ranking.length -1; i++){
+                for(uint j = 1; j < ranking.length ; j++){
+                    // If the next position is higher
+                    if(ranking[i].wins < ranking[j].wins){
+                        // first position temporary storage
+                        Player memory next = ranking[i];
+                        // replace first position
+                        ranking[i] = ranking[j];
+                        // replace next position
+                        ranking[j] = next;
+                    }
+                }
+            }
+            return  ranking;
         }
     }
 }
