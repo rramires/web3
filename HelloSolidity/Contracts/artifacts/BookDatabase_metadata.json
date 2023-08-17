@@ -1,0 +1,161 @@
+{
+	"compiler": {
+		"version": "0.8.18+commit.87f61d96"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "string",
+								"name": "title",
+								"type": "string"
+							},
+							{
+								"internalType": "uint16",
+								"name": "year",
+								"type": "uint16"
+							}
+						],
+						"internalType": "struct BookDatabase.Book",
+						"name": "newBook",
+						"type": "tuple"
+					}
+				],
+				"name": "addBook",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint32",
+						"name": "",
+						"type": "uint32"
+					}
+				],
+				"name": "books",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "title",
+						"type": "string"
+					},
+					{
+						"internalType": "uint16",
+						"name": "year",
+						"type": "uint16"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint32",
+						"name": "id",
+						"type": "uint32"
+					},
+					{
+						"components": [
+							{
+								"internalType": "string",
+								"name": "title",
+								"type": "string"
+							},
+							{
+								"internalType": "uint16",
+								"name": "year",
+								"type": "uint16"
+							}
+						],
+						"internalType": "struct BookDatabase.Book",
+						"name": "newBook",
+						"type": "tuple"
+					}
+				],
+				"name": "editBook",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint32",
+						"name": "id",
+						"type": "uint32"
+					}
+				],
+				"name": "removeBook",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "total",
+				"outputs": [
+					{
+						"internalType": "uint32",
+						"name": "",
+						"type": "uint32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"addBook((string,uint16))": {
+					"notice": "Add new book  eg: [\"Book 1\", 1995]"
+				},
+				"editBook(uint32,(string,uint16))": {
+					"notice": "Edit an existent book  eg: 1,[\"Book 2\", 2000] or 1,[\"\", 1999] or 1,[\"Book 3\", 0]"
+				},
+				"removeBook(uint32)": {
+					"notice": "Remove an existent book  eg: 1"
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Contracts/BookDatabase.sol": "BookDatabase"
+		},
+		"evmVersion": "paris",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Contracts/BookDatabase.sol": {
+			"keccak256": "0x9c4901cac928a3d06271c813990f5cd443b1f04f5aa439095e777596e7d43b89",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6fcfe3c9039ee140d411b5248e879e331782989c62ec00e35491455d01dd3a27",
+				"dweb:/ipfs/QmXm49rDHYrJ89PZC7cCx1nwxvZy1dbGR3HKaDinJjd34D"
+			]
+		}
+	},
+	"version": 1
+}
