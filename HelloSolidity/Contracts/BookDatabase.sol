@@ -27,6 +27,27 @@ contract BookDatabase {
 
     // number of records
     uint32 public total = 0;
+
+    // Contract owner (Immutable is important to never be changed)
+    address private immutable owner;
+
+
+    /**
+     * Contract constructor
+     */
+    constructor() {
+        // Defines who deployed as the contract owner
+        owner = msg.sender;
+    }
+
+
+    /**
+     * Modifier for security restriction
+     */
+    modifier restricted() {
+        require(owner == msg.sender, "You don't have permission.");
+        _; // _; is necessary to end modifiers
+    }
     
 
     /**
@@ -65,7 +86,10 @@ contract BookDatabase {
      * Remove an existent book 
      * eg: 1
      */
-    function removeBook(uint32 id) public {
+    function removeBook(uint32 id) 
+    public 
+    restricted // This method is protected by the custom modifier
+    {
         if (books[id].year > 0) {
             delete books[id];
             total--;

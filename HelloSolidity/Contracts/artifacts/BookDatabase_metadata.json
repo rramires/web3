@@ -6,6 +6,11 @@
 	"output": {
 		"abi": [
 			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
 				"inputs": [
 					{
 						"components": [
@@ -122,6 +127,9 @@
 				"addBook((string,uint16))": {
 					"notice": "Add new book  eg: [\"Book 1\", 1995]"
 				},
+				"constructor": {
+					"notice": "Contract constructor"
+				},
 				"editBook(uint32,(string,uint16))": {
 					"notice": "Edit an existent book  eg: 1,[\"Book 2\", 2000] or 1,[\"\", 1999] or 1,[\"Book 3\", 0]"
 				},
@@ -149,11 +157,11 @@
 	},
 	"sources": {
 		"Contracts/BookDatabase.sol": {
-			"keccak256": "0x9c4901cac928a3d06271c813990f5cd443b1f04f5aa439095e777596e7d43b89",
+			"keccak256": "0x1356b32a9ea172b934ed57e5ec3d25b9483af60c7fac653883816938ca41fd36",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6fcfe3c9039ee140d411b5248e879e331782989c62ec00e35491455d01dd3a27",
-				"dweb:/ipfs/QmXm49rDHYrJ89PZC7cCx1nwxvZy1dbGR3HKaDinJjd34D"
+				"bzz-raw://9553185e0480c706f8e8b7e671c55dade6324d27326b8952531e35f69a5285fd",
+				"dweb:/ipfs/QmWh31F23mywntMBCJ98QA4QB82FoABJX6rG3ZmgKpdceE"
 			]
 		}
 	},
