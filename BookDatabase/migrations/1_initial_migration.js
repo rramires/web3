@@ -1,5 +1,5 @@
-const HelloTruffle = artifacts.require("HelloTruffle");
+const BookDatabase = artifacts.require("BookDatabase");
 
 module.exports = function(deployer) {
-  deployer.deploy(HelloTruffle);
+  deployer.deploy(BookDatabase);
 };
