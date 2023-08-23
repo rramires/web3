@@ -1,11 +1,10 @@
 module.exports = {
   networks: {
-    /* development: {
-      host: "localhost",
-      port: 8545,
-      network_id: "*", // Match any network id
-      gas: 5000000
-    } */
+    wsl: {
+      host: "172.17.192.1", // WSL IP (Ganache hostname changed to vEthernet(WSL))
+      port: 7545,
+      network_id: "5777"
+    } 
   },
   compilers: {
     solc: {
