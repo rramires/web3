@@ -3,6 +3,10 @@ require("dotenv").config();
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 
 module.exports = {
+  plugins: ["truffle-plugin-verify"],
+  api_keys: {
+    etherscan: process.env.ETHSCAN_API
+  },
   networks: {
     wsl: {
       host: "172.17.192.1", // WSL IP (Ganache hostname changed to vEthernet(WSL))
