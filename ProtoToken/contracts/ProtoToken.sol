@@ -30,11 +30,25 @@ contract ProtoToken{
      */
     mapping(address => uint256) private _balances;
 
+    /**
+     * Allowances structure
+     * 
+     * Wallet addr1 allows addr2 to transfer until 10 tokens
+     * [addr1][addr2] = 10
+     */
+    mapping( address => mapping(address => uint256) ) private _allowances;
+
 
     /**
      * Transfer event
      */
     event Transfer(address indexed _from, address indexed _to, uint256 _value);
+
+    /**
+     * Approval event
+     */
+    event Approval(address indexed _owner, address indexed _spender, uint256 _value);
+
 
 
     /**
@@ -69,4 +83,26 @@ contract ProtoToken{
 
         return true;
     }
+
+    /**
+     * Approves delegated balance transfer
+     */
+    function approve(address _spender, uint256 _value) public returns (bool success){
+        // add 
+        _allowances[msg.sender][_spender] = _value;
+
+        // Emits the approves event
+        emit Approval(msg.sender, _spender, _value);
+
+        return true;
+    }
+
+    /**
+     * Verify delegated balance approval
+     */
+    function allowance(address _owner, address _spender) public view returns (uint256 remaining){
+        // return remaining value
+        return _allowances[_owner][_spender];
+    }
+
 }

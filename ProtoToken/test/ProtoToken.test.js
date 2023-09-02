@@ -81,8 +81,8 @@ contract('ProtoToken', function(accounts) {
   it("Should NOT transfer", async () => {
     // set invalid - one more than the total
     const qty = new BN(21000001).mul(new BN(10).pow(DECIMALS)); 
-    
-    // Catch the revert transaction
+
+    // catches the revert transaction
     try{
       // transfer
       await contract.transfer(accounts[1], qty);
@@ -93,5 +93,21 @@ contract('ProtoToken', function(accounts) {
       // find "revert" from message
       assert.include(err.message, "revert", "The transfer should br reverted.");
     }
+  })
+
+  it("Should approve", async () => {
+    // set 
+    const qty = new BN(1).mul(new BN(10).pow(DECIMALS));
+    
+    // approve
+    await contract.approve(accounts[1], qty);
+
+    // get
+    const allowance = await contract.allowance(accounts[0], accounts[1]);
+    
+    // console.log(Number(allowance) / 10 ** 18 );
+
+    // validate 
+    assert(allowance.eq(qty), "Incorrect allowance balance.");
   })
 })
