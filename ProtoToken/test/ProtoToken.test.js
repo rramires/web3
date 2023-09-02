@@ -41,6 +41,16 @@ contract('ProtoToken', function(accounts) {
     // get 
     const totalSupply = await contract.totalSupply();
     // validate 
-    assert(totalSupply.eq(TOTAL_SUPPLY), "Incorrect totalSupply.");
+    assert(totalSupply.eq(TOTAL_SUPPLY), "Incorrect total supply.");
+  })
+
+  it("Owner should has total supply", async () => {
+    // set 21 millions of coins
+    const TOTAL_SUPPLY = new BN(21000000).mul(new BN(10).pow(DECIMALS));
+    // get 
+    const ownerBalance = await contract.balanceOf(accounts[0]);
+    //console.log( Number(ownerBalance) / 10 ** 18 );
+    // validate 
+    assert(ownerBalance.eq(TOTAL_SUPPLY), "Incorrect owner balance.");
   })
 })
