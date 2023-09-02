@@ -53,4 +53,45 @@ contract('ProtoToken', function(accounts) {
     // validate 
     assert(ownerBalance.eq(TOTAL_SUPPLY), "Incorrect owner balance.");
   })
+
+  it("Should transfer", async () => {
+    // set 
+    const qty = new BN(1).mul(new BN(10).pow(DECIMALS));
+    // get before
+    const fromBalanceBefore = await contract.balanceOf(accounts[0]);
+    const toBalanceBefore = await contract.balanceOf(accounts[1]);
+    
+    // transfer
+    await contract.transfer(accounts[1], qty);
+
+    // get after
+    const fromBalanceAfter = await contract.balanceOf(accounts[0]);
+    const toBalanceAfter = await contract.balanceOf(accounts[1]);
+    
+    /* console.log( Number(fromBalanceBefore) / 10 ** 18 );
+    console.log( Number(fromBalanceAfter) / 10 ** 18 );
+    console.log( Number(toBalanceBefore) / 10 ** 18 );
+    console.log( Number(toBalanceAfter) / 10 ** 18 ); */
+
+    // validate 
+    assert(fromBalanceAfter.eq(fromBalanceBefore.sub(qty)), "Incorrect from balance.");
+    assert(toBalanceAfter.eq(toBalanceBefore.add(qty)), "Incorrect to balance.");
+  })
+
+  it("Should NOT transfer", async () => {
+    // set invalid - one more than the total
+    const qty = new BN(21000001).mul(new BN(10).pow(DECIMALS)); 
+    
+    // Catch the revert transaction
+    try{
+      // transfer
+      await contract.transfer(accounts[1], qty);
+      // if not fail, create error
+      assert.fail("The transfer should have thrown an error.");
+    }
+    catch(err){
+      // find "revert" from message
+      assert.include(err.message, "revert", "The transfer should br reverted.");
+    }
+  })
 })

@@ -32,6 +32,12 @@ contract ProtoToken{
 
 
     /**
+     * Transfer event
+     */
+    event Transfer(address indexed _from, address indexed _to, uint256 _value);
+
+
+    /**
      * Contract constructor
      */
     constructor(){
@@ -47,5 +53,20 @@ contract ProtoToken{
         return _balances[_owner];
     }
 
+    /**
+     * Balance transfer
+     */
+    function transfer(address _to, uint256 _value) public returns (bool success){
+        // Check balance
+        require(balanceOf(msg.sender) >= _value, "Insufficient balance.");
 
+        // Calcs
+        _balances[msg.sender] -= _value;
+        _balances[_to] += _value;
+        
+        // Emits the transfer event
+        emit Transfer(msg.sender, _to, _value);
+
+        return true;
+    }
 }
