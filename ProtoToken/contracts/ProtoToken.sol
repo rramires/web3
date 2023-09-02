@@ -74,7 +74,7 @@ contract ProtoToken{
         // Check balance
         require(balanceOf(msg.sender) >= _value, "Insufficient balance.");
 
-        // Calcs
+        // Transfer
         _balances[msg.sender] -= _value;
         _balances[_to] += _value;
         
@@ -105,4 +105,24 @@ contract ProtoToken{
         return _allowances[_owner][_spender];
     }
 
+    /**
+     * Delgated balance transfer
+     */
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success){
+        // Check balance
+        require(balanceOf(_from) >= _value, "Insufficient balance.");
+        // Check allowance
+        require(allowance(_from, msg.sender) >= _value, "Insufficient allowance.");
+
+        // Transfer
+        _balances[_from] -= _value;
+        _balances[_to] += _value;
+        // burn allowance value
+        _allowances[_from][msg.sender] -= _value;
+        
+        // Emits the transfer event
+        emit Transfer(_from, _to, _value);
+
+        return true;
+    }
 }

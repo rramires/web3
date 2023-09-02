@@ -60,6 +60,9 @@ contract('ProtoToken', function(accounts) {
     // get before
     const fromBalanceBefore = await contract.balanceOf(accounts[0]);
     const toBalanceBefore = await contract.balanceOf(accounts[1]);
+
+    /* console.log( Number(fromBalanceBefore) / 10 ** 18 );
+    console.log( Number(toBalanceBefore) / 10 ** 18 ); */
     
     // transfer
     await contract.transfer(accounts[1], qty);
@@ -68,10 +71,8 @@ contract('ProtoToken', function(accounts) {
     const fromBalanceAfter = await contract.balanceOf(accounts[0]);
     const toBalanceAfter = await contract.balanceOf(accounts[1]);
     
-    /* console.log( Number(fromBalanceBefore) / 10 ** 18 );
-    console.log( Number(fromBalanceAfter) / 10 ** 18 );
-    console.log( Number(toBalanceBefore) / 10 ** 18 );
-    console.log( Number(toBalanceAfter) / 10 ** 18 ); */
+    /* console.log( Number(fromBalanceAfter) / 10 ** 18 );
+    console.log( Number(toBalanceAfter) / 10 ** 18 );  */
 
     // validate 
     assert(fromBalanceAfter.eq(fromBalanceBefore.sub(qty)), "Incorrect from balance.");
@@ -91,7 +92,7 @@ contract('ProtoToken', function(accounts) {
     }
     catch(err){
       // find "revert" from message
-      assert.include(err.message, "revert", "The transfer should br reverted.");
+      assert.include(err.message, "revert", "The transfer should be reverted.");
     }
   })
 
@@ -109,5 +110,56 @@ contract('ProtoToken', function(accounts) {
 
     // validate 
     assert(allowance.eq(qty), "Incorrect allowance balance.");
+  })
+
+  it("Should transfer from", async () => {
+    // set 
+    const qty = new BN(1).mul(new BN(10).pow(DECIMALS));
+
+    // get before
+    const allowanceBefore = await contract.allowance(accounts[0], accounts[1]);
+    const fromBalanceBefore = await contract.balanceOf(accounts[0]);
+    const toBalanceBefore = await contract.balanceOf(accounts[1]);
+
+    /* console.log( Number(allowanceBefore) / 10 ** 18 );
+    console.log( Number(fromBalanceBefore) / 10 ** 18 );
+    console.log( Number(toBalanceBefore) / 10 ** 18 ); */
+
+    // approve
+    await contract.approve(accounts[1], qty);
+    
+    // transfer
+    await contract.transferFrom(accounts[0], accounts[1], qty, { from: accounts[1] } ); // { change default caller }
+
+    // get after
+    const allowanceAfter = await contract.allowance(accounts[0], accounts[1]);
+    const fromBalanceAfter = await contract.balanceOf(accounts[0]);
+    const toBalanceAfter = await contract.balanceOf(accounts[1]);
+    
+    /* console.log( Number(allowanceAfter) / 10 ** 18 );
+    console.log( Number(fromBalanceAfter) / 10 ** 18 );
+    console.log( Number(toBalanceAfter) / 10 ** 18 );  */
+    
+    // validate 
+    assert(allowanceAfter.eq(allowanceBefore), "Incorrect allowance.");
+    assert(fromBalanceAfter.eq(fromBalanceBefore.sub(qty)), "Incorrect from balance.");
+    assert(toBalanceAfter.eq(toBalanceBefore.add(qty)), "Incorrect to balance.");
+  })
+
+  it("Should NOT transfer from", async () => {
+    // set 
+    const qty = new BN(1).mul(new BN(10).pow(DECIMALS)); 
+
+    // catches the revert transaction
+    try{
+      // transfer without allowance
+      await contract.transferFrom(accounts[0], accounts[1], qty, { from: accounts[1] } );
+      // if not fail, create error
+      assert.fail("The transfer from should have thrown an error.");
+    }
+    catch(err){
+      // find "revert" from message
+      assert.include(err.message, "revert", "The transfer from should be reverted.");
+    }
   })
 })
