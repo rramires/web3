@@ -1,5 +1,14 @@
 {
+  "scripts": {
+    "ganache": "node ./ganacheConf"
+  },
   "dependencies": {
-    "bn.js": "^5.2.1"
+    "@truffle/hdwallet-provider": "^2.1.15",
+    "bn.js": "^5.2.1",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "shelljs": "^0.8.5",
+    "truffle-plugin-verify": "^0.6.5"
   }
 }
