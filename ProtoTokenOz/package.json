@@ -3,6 +3,7 @@
     "ganache": "node ./ganache-conf"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^4.9.3",
     "@truffle/hdwallet-provider": "^2.1.15",
     "bn.js": "^5.2.1",
     "dotenv": "^16.3.1"
