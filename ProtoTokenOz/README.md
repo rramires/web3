@@ -14,6 +14,12 @@ npm install @openzeppelin/contracts
 
 ## Deploy
 truffle migrate --network goerli 
+or
+truffle migrate --network bsctest
 
 ## Verify contract
-truffle run verify ProtoToken@YourContractAddress --network UsedNetwork
+truffle run verify ProtoToken@YourContractAddress --network goerli --verifiers=etherscan
+or
+truffle run verify ProtoToken@YourContractAddress --network bsctest --verifiers=bscscan
+// error(truffle-plugin-verify has no support for verifier bscscan, supported verifiers: etherscan,sourcify) 
+
