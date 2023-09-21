@@ -1,4 +1,7 @@
-const BN = require("bn.js");
+const {
+  BN,  
+  time
+} = require('@openzeppelin/test-helpers');
 
 const ProtoToken = artifacts.require("ProtoToken");
 
@@ -160,6 +163,152 @@ contract('ProtoToken', function(accounts) {
     catch(err){
       // find "revert" from message
       assert.include(err.message, "revert", "The transfer from should be reverted.");
+    }
+  })
+
+  it("Should mint once", async () => {
+
+    // set mint amount
+    const mintAmount = new BN(1000);
+    await contract.setMintAmount(mintAmount);
+
+    // get before
+    const balanceBefore = await contract.balanceOf(accounts[1]);
+
+    // console.log( Number(balanceBefore) );
+    
+    // mint to account 1
+    await contract.mint( { from: accounts[1] } ); 
+
+    // get after
+    const balanceAfter = await contract.balanceOf(accounts[1]);
+    
+    // console.log( Number(balanceAfter) );
+    
+    // validate 
+    assert(balanceAfter.eq(balanceBefore.add(mintAmount)), "Incorrect balance.");
+  })
+
+  it("Should mint twice (different accounts)", async () => {
+
+    // set mint amount
+    const mintAmount = new BN(1000);
+    await contract.setMintAmount(mintAmount);
+
+    // get before
+    const balance1_Before = await contract.balanceOf(accounts[1]);
+    const balance2_Before = await contract.balanceOf(accounts[2]);
+
+    // console.log( Number(balance1_Before), Number(balance2_Before) );
+    
+    // mint to account 1 and 2
+    await contract.mint( { from: accounts[1] } ); 
+    await contract.mint( { from: accounts[2] } ); 
+
+    // get after
+    const balance1_After = await contract.balanceOf(accounts[1]);
+    const balance2_After = await contract.balanceOf(accounts[2]);
+    
+    // console.log( Number(balance1_After), Number(balance2_After) );
+    
+    // validate 
+    assert(balance1_After.eq(balance1_Before.add(mintAmount)), "Incorrect balance 1.");
+    assert(balance2_After.eq(balance2_Before.add(mintAmount)), "Incorrect balance 2.");
+  })
+
+  it("Should mint twice (different moments)", async () => {
+
+    // set mint amount
+    const mintAmount = new BN(1000);
+    await contract.setMintAmount(mintAmount);
+
+    // set delay
+    const delayInSeconds = 1;
+    await contract.setMintDelay(delayInSeconds); 
+
+    // get before
+    const balanceBefore = await contract.balanceOf(accounts[1]);
+
+    // console.log( Number(balanceBefore) );
+    
+    // mint to account 1
+    await contract.mint({ from: accounts[1] } ); 
+    
+    // add 2 seconds interval by openzeppelin test-helpers
+    await time.increase(delayInSeconds * 2);
+
+    // mint again
+    await contract.mint({ from: accounts[1] } ); 
+
+    // get after
+    const balanceAfter = await contract.balanceOf(accounts[1]);
+    
+    // console.log( Number(balanceAfter) );
+    
+    // validate 
+    assert(balanceAfter.eq(balanceBefore.add( new BN(mintAmount * 2) )), "Incorrect balance.");
+  })
+
+  it("Should NOT setMintAmount (permission)", async () => {
+    // catches the revert transaction
+    try{
+      // set without allowance
+      await contract.setMintAmount(1, { from: accounts[1] } );
+      // if not fail, create error
+      assert.fail("The setMintAmount should have thrown an error.");
+    }
+    catch(err){
+      // find "revert" from message
+      assert.include(err.message, "revert", "The setMintAmount should be reverted.");
+    }
+  })
+
+  it("Should NOT setMintDelay (permission)", async () => {
+    // catches the revert transaction
+    try{
+      // set without allowance
+      await contract.setMintDelay(1, { from: accounts[1] } );
+      // if not fail, create error
+      assert.fail("The setMintDelay should have thrown an error.");
+    }
+    catch(err){
+      // find "revert" from message
+      assert.include(err.message, "revert", "The setMintDelay should be reverted.");
+    }
+  })
+
+  it("Should NOT mint (disabled)", async () => {
+    // catches the revert transaction
+    try{
+      // the mint default is 0 (disabled)
+      await contract.mint({ from: accounts[1] } );
+      // if not fail, create error
+      assert.fail("The mint should have thrown an error.");
+    }
+    catch(err){
+      // find "revert" from message
+      assert.include(err.message, "revert", "The mint should be reverted.");
+    }
+  })
+
+  it("Should NOT mint twice", async () => {
+
+    // set mint amount
+    await contract.setMintAmount(new BN(1000));
+
+    // mint - first time OK
+    await contract.mint({ from: accounts[1] } ); 
+
+    // catches the revert transaction
+    try{
+      // 
+      await contract.mint({ from: accounts[1] } );
+      // if not fail, create error
+      assert.fail("The mint twice should have thrown an error.");
+    }
+    catch(err){
+      // find "revert" from message
+      assert.include(err.message, "revert", "The mint twice should be reverted.");
     }
   })
 })
