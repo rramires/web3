@@ -1,13 +1,26 @@
-# Sample Hardhat Project
+# BookDatabase
+Example project, to study the configuration, deployment and contract verification processes
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+## Packages
+```shell
+npm init -y 
 
-Try running some of the following tasks:
+npm i -D hardhat
+
+npx hardhat init
+```
+Select TypeScript project  
+Add .gitignore? Y  
+Sample Project...? Y  
+
+## Deploy
 
 ```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
+npm run deploy
+```
+
+## Verify contract
+
+```shell
+
 ```

@@ -7,7 +7,6 @@ describe("BookDatabase", function () {
   // Deploy template
   async function deployFixture() {
 
-
     // Aux
     const bookSample = {
         title: "Learning Solidity",
