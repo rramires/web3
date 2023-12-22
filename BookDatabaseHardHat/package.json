@@ -6,7 +6,8 @@
   "scripts": {
     "start": "npx hardhat node",
     "test": "npx hardhat test",
-    "deploy": "npx hardhat run scripts/deploy.ts"
+    "deploy": "npx hardhat run scripts/deploy.ts",
+    "deploy_testnet": "npx hardhat run scripts/deploy.ts --network sepolia"
   },
   "keywords": [],
   "author": "",
@@ -14,5 +15,8 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "hardhat": "^2.19.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
   }
 }

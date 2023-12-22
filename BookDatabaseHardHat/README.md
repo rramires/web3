@@ -5,6 +5,8 @@ Example project, to study the configuration, deployment and contract verificatio
 ```shell
 npm init -y 
 
+npm i dotenv  
+
 npm i -D hardhat
 
 npx hardhat init
@@ -16,24 +18,30 @@ Sample Project...? Y
 ## Deploy
 
 ```shell
+# Localhost
 npm run deploy
+
+# Sepolia via Infura
+npx hardhat run scripts/deploy.ts --network sepolia
 ```
 
 ## Interacting via console
 
 ```shell
+# Start console
 npx hardhat console
+
 # List object with commands
 ethers 
 # > says a big object
 
-# Interact with contract
-const contract = await ethers.getContractAt("BookDatabase", "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0")
+# Interact with contract (Contract Name, Contract Address)
+const contract = await ethers.getContractAt("BookDatabase", "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0");
 # > undefined
 
 # Add books
-await contract.addBook({title: "New Book", year: 2023})
-await contract.addBook({title: "New Book 2", year: 2024})
+await contract.addBook({title: "New Book", year: 2023});
+await contract.addBook({title: "New Book 2", year: 2024});
 
 # Get number of records
 await contract.total();
