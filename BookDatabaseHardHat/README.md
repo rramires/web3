@@ -5,7 +5,9 @@ Example project, to study the configuration, deployment and contract verificatio
 ```shell
 npm init -y 
 
-npm i dotenv  
+npm i dotenv 
+
+npm i -D @nomiclabs/hardhat-etherscan
 
 npm i -D hardhat
 
@@ -61,5 +63,6 @@ await contract.total();
 ## Verify contract
 
 ```shell
-
+# npx hardhat verify --network sepolia Your Contract Address 
+npx hardhat verify --network sepolia 0x2e098...etc
 ```
