@@ -19,12 +19,45 @@ describe("ERC20 Tests", function () {
     return { erc20, owner, otherAccount };
   }
 
-  // Test sample
-  it("Should test", async function () {
+  // Tests
+
+  it("Should have correct name", async function () {
     const { erc20, owner, otherAccount } = await loadFixture(deployFixture);
 
+    // get 
+    const name = await erc20.name();
+
     // Test
-    expect(true).to.equal(true);
+    expect(name).to.equal("ERCSample");
+  });
+  
+  it("Should have correct symbol", async function () {
+    const { erc20, owner, otherAccount } = await loadFixture(deployFixture);
+
+    // get 
+    const symbol = await erc20.symbol();
+
+    // Test
+    expect(symbol).to.equal("ERCS");
   });
 
+  it("Should have correct decimals", async function () {
+    const { erc20, owner, otherAccount } = await loadFixture(deployFixture);
+
+    // get 
+    const decimals = await erc20.decimals();
+
+    // Test
+    expect(decimals).to.equal(18);
+  });
+
+  it("Should have correct total supply", async function () {
+    const { erc20, owner, otherAccount } = await loadFixture(deployFixture);
+
+    // get 
+    const totalSupply = await erc20.totalSupply();
+
+    // Test
+    expect(totalSupply).to.equal(21000000n * 10n ** 18n);
+  });
 });
