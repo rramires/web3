@@ -33,6 +33,11 @@ contract ERC20 {
      */
     mapping(address => uint256) private _balances;
 
+    /**
+     * Transfer event
+     */
+    event Transfer(address indexed _from, address indexed _to, uint256 _value);
+
 
     /**
      * Contract constructor
@@ -48,5 +53,22 @@ contract ERC20 {
      */
     function balanceOf(address _owner) public view returns (uint256 balance){
         return _balances[_owner];
+    }
+
+    /**
+     * Balance transfer
+     */
+    function transfer(address _to, uint256 _value) public returns (bool success){
+        // Check balance
+        require(balanceOf(msg.sender) >= _value, "Insufficient balance.");
+
+        // Transfer
+        _balances[msg.sender] -= _value;
+        _balances[_to] += _value;
+        
+        // Emits the transfer event
+        emit Transfer(msg.sender, _to, _value);
+
+        return true;
     }
 }
