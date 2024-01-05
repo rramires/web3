@@ -27,4 +27,19 @@ contract ERC20 {
      */
     uint256 public totalSupply = 21000000 * 10 ** decimals;
 
+    /**
+     * Balances structure 
+     * eg: [addr] = 10
+     */
+    mapping(address => uint256) private _balances;
+
+
+    /**
+     * Contract constructor
+     */
+    constructor(){
+        // Set the initial balance for the contract owner
+        _balances[msg.sender] = totalSupply;
+    }
+
 }
