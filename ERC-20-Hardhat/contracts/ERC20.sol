@@ -42,4 +42,11 @@ contract ERC20 {
         _balances[msg.sender] = totalSupply;
     }
 
+
+    /**
+     * Returns the wallet balance
+     */
+    function balanceOf(address _owner) public view returns (uint256 balance){
+        return _balances[_owner];
+    }
 }
