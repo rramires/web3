@@ -60,4 +60,15 @@ describe("ERC20 Tests", function () {
     // Test
     expect(totalSupply).to.equal(21000000n * 10n ** 18n);
   });
+
+  it("Should get balance", async function () {
+    const { erc20, owner, otherAccount } = await loadFixture(deployFixture);
+
+    // get 
+    const balance = await erc20.balanceOf(owner);
+
+    // Test
+    expect(balance).to.equal(21000000n * 10n ** 18n);
+  });
+
 });
