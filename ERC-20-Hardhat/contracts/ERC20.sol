@@ -99,4 +99,12 @@ contract ERC20 {
 
         return true;
     }
+
+    /**
+     * Verify delegated balance approval
+     */
+    function allowance(address _owner, address _spender) public view returns (uint256 remaining){
+        // return remaining value
+        return _allowances[_owner][_spender];
+    }
 }
