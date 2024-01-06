@@ -110,4 +110,17 @@ describe("ERC20 Tests", function () {
     // Test revert transaction with message
     await expect( otherContract.transfer(owner, qty) ).to.be.revertedWith("Insufficient balance.");
   });
+
+  it("Should approve and allowance", async function () {
+    const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
+
+    // Approve 
+    await contract.approve(otherAccount.address, 1n);
+
+    // Check approval
+    const value = await contract.allowance(owner.address, otherAccount.address);
+
+    // Test
+    expect(value).to.equal(1n);
+  });
 });
