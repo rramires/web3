@@ -27,7 +27,7 @@ describe("ERC20 Tests", function () {
   it("Should have correct name", async function () {
     const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
 
-    // get 
+    // Get 
     const name = await contract.name();
 
     // Test
@@ -37,7 +37,7 @@ describe("ERC20 Tests", function () {
   it("Should have correct symbol", async function () {
     const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
 
-    // get 
+    // Get 
     const symbol = await contract.symbol();
 
     // Test
@@ -47,7 +47,7 @@ describe("ERC20 Tests", function () {
   it("Should have correct decimals", async function () {
     const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
 
-    // get 
+    // Get 
     const decimals = await contract.decimals();
 
     // Test
@@ -57,7 +57,7 @@ describe("ERC20 Tests", function () {
   it("Should have correct total supply", async function () {
     const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
 
-    // get 
+    // Get 
     const totalSupply = await contract.totalSupply();
 
     // Test
@@ -67,7 +67,7 @@ describe("ERC20 Tests", function () {
   it("Should get balance", async function () {
     const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
 
-    // get 
+    // Get 
     const balance = await contract.balanceOf(owner.address);
 
     // Test
@@ -77,16 +77,17 @@ describe("ERC20 Tests", function () {
   it("Should transfer", async function () {
     const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
 
-    // set 
+    // Set 
     const qty = 1n;
 
-    // get before
+    // Get before
     const fromBalanceBefore = await contract.balanceOf(owner.address);
     const toBalanceBefore = await contract.balanceOf(otherAccount.address);
 
-    // transfer
+    // Transfer
     await contract.transfer(otherAccount.address, qty);
 
+    // Get after
     const fromBalanceAfter = await contract.balanceOf(owner.address);
     const toBalanceAfter = await contract.balanceOf(otherAccount.address);
 
@@ -95,5 +96,18 @@ describe("ERC20 Tests", function () {
     expect(toBalanceBefore).to.equal(0n);
     expect(fromBalanceAfter).to.equal(total -1n);
     expect(toBalanceAfter).to.equal(1n);
+  });
+
+  it("Should NOT transfer", async function () {
+    const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
+
+    // Set 
+    const qty = 1n;
+
+    // Transfer from the other account with 0 balance
+    const otherContract = contract.connect(otherAccount);
+
+    // Test revert transaction with message
+    await expect( otherContract.transfer(owner, qty) ).to.be.revertedWith("Insufficient balance.");
   });
 });
