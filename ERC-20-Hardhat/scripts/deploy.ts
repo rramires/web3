@@ -2,12 +2,12 @@ import { ethers } from "hardhat";
 
 async function main() {
   // Get contract and deploy
-  const erc20 = await ethers.deployContract("ERC20");
+  const contract = await ethers.deployContract("ERC20");
   // Await to finish
-  await erc20.waitForDeployment();
+  await contract.waitForDeployment();
 
   // Get contract address and print
-  const address = await erc20.getAddress();
+  const address = await contract.getAddress();
   console.log(`ERC20 has been deployed at: \n${address}`);
 }
 
