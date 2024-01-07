@@ -107,4 +107,24 @@ contract ERC20 {
         // return remaining value
         return _allowances[_owner][_spender];
     }
+
+    /**
+     * Delegated balance transfer
+     */
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success){
+        // Check balance
+        require(balanceOf(_from) >= _value, "Insufficient balance.");
+        // Check allowance
+        require(allowance(_from, msg.sender) >= _value, "Insufficient allowance.");
+
+        // Transfer
+        _allowances[_from][msg.sender] -= _value; 
+        _balances[_from] -= _value;
+        _balances[_to] += _value; 
+        
+        // Emits the transfer event
+        emit Transfer(_from, _to, _value);
+
+        return true;
+    }
 }
