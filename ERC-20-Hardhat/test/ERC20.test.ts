@@ -155,4 +155,27 @@ describe("ERC20 Tests", function () {
     expect(toBalanceAfter).to.equal(qty);
     expect(allowance).to.equal(qty);
   });
+
+  it("Should NOT transferFrom (balance)", async function () {
+    const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
+
+    const otherContract = contract.connect(otherAccount);
+
+    // Total coins + 1
+
+    // Test revert transaction with message
+    await expect( otherContract.transferFrom(owner.address, otherAccount.address, (total + 1n) )).to.be.revertedWith("Insufficient balance.");
+  });
+
+  it("Should NOT transferFrom (allowance)", async function () {
+    const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
+
+    // Transfer from the other account with 0 balance
+    const otherContract = contract.connect(otherAccount);
+
+    // Allowance was not called!
+
+    // Test revert transaction with message
+    await expect( otherContract.transferFrom(owner.address, otherAccount.address, 1n) ).to.be.revertedWith("Insufficient allowance.");
+  });
 });
