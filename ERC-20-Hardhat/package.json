@@ -7,13 +7,15 @@
     "start": "npx hardhat node",
     "compile": "npx hardhat compile",
     "test": "npx hardhat test",
-    "deploy": "npx hardhat run scripts/deploy.ts"
+    "deploy": "npx hardhat run scripts/deploy.ts",
+    "deploy_testnet": "npx hardhat run scripts/deploy.ts --network sepolia"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.3",
     "hardhat": "^2.19.4"
   },
   "dependencies": {

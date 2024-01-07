@@ -10,6 +10,8 @@ npm i dotenv
 npm i -D hardhat
 
 npx hardhat init
+
+npm i -D @nomicfoundation/hardhat-verify 
 ```
 
 ## Run and Tests
@@ -23,4 +25,13 @@ npm test
 
 # Deploy 
 npm run deploy 
+```
+## Deploy
+
+```shell
+# Localhost
+npm run deploy
+
+# Sepolia via Infura
+npm run deploy_testnet   
 ```
