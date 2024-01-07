@@ -26,6 +26,7 @@ npm test
 # Deploy 
 npm run deploy 
 ```
+
 ## Deploy
 
 ```shell
@@ -34,4 +35,11 @@ npm run deploy
 
 # Sepolia via Infura
 npm run deploy_testnet   
+```
+
+## Verify contract
+
+```shell
+# npx hardhat verify --network sepolia Your Contract Address 
+npx hardhat verify --network sepolia 0x2e098...etc
 ```
