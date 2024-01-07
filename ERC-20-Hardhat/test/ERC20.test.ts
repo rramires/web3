@@ -94,8 +94,8 @@ describe("ERC20 Tests", function () {
     // Tests
     expect(fromBalanceBefore).to.equal(total);
     expect(toBalanceBefore).to.equal(0n);
-    expect(fromBalanceAfter).to.equal(total -1n);
-    expect(toBalanceAfter).to.equal(1n);
+    expect(fromBalanceAfter).to.equal(total - qty);
+    expect(toBalanceAfter).to.equal(qty);
   });
 
   it("Should NOT transfer", async function () {
@@ -122,5 +122,37 @@ describe("ERC20 Tests", function () {
 
     // Test
     expect(value).to.equal(1n);
+  });
+
+  it("Should transferFrom", async function () {
+    const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
+
+    // Set 
+    const qty = 1n;
+    const otherContract = contract.connect(otherAccount);
+
+    // Get before
+    const fromBalanceBefore = await contract.balanceOf(owner.address);
+    const toBalanceBefore = await contract.balanceOf(otherAccount.address);
+
+    // Approve other otherAccount to tranfer 2
+    await contract.approve(otherAccount.address, (qty * 2n));
+
+    // Transfer 1
+    await otherContract.transferFrom(owner.address, otherAccount.address, qty);
+
+    // Get rest
+    const allowance = await otherContract.allowance(owner.address, otherAccount.address);
+
+    // Get after
+    const fromBalanceAfter = await contract.balanceOf(owner.address);
+    const toBalanceAfter = await contract.balanceOf(otherAccount.address);
+
+    // Tests
+    expect(fromBalanceBefore).to.equal(total);
+    expect(toBalanceBefore).to.equal(0n);
+    expect(fromBalanceAfter).to.equal(total - qty);
+    expect(toBalanceAfter).to.equal(qty);
+    expect(allowance).to.equal(qty);
   });
 });
