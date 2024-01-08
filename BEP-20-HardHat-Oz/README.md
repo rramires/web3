@@ -12,6 +12,8 @@ npm i -D hardhat
 npx hardhat init
 
 npm i -D @nomicfoundation/hardhat-verify 
+
+npm i @openzeppelin/contracts 
 ```
 
 ## Run and Tests

@@ -10,10 +10,10 @@ describe("ERC20 Tests", function () {
     const [owner, otherAccount] = await ethers.getSigners();
 
     // Create the contract that will be tested
-    const ERC20 = await ethers.getContractFactory("BEP20");
+    const Contract = await ethers.getContractFactory("BEP20");
 
     // Deploy
-    const contract = await ERC20.deploy();
+    const contract = await Contract.deploy();
 
     // Total supply
     const total = 21000000n * 10n ** 18n
@@ -31,7 +31,7 @@ describe("ERC20 Tests", function () {
     const name = await contract.name();
 
     // Test
-    expect(name).to.equal("ERCSample");
+    expect(name).to.equal("BEPSample");
   });
   
   it("Should have correct symbol", async function () {
@@ -41,7 +41,7 @@ describe("ERC20 Tests", function () {
     const symbol = await contract.symbol();
 
     // Test
-    expect(symbol).to.equal("ERCS");
+    expect(symbol).to.equal("BEPS");
   });
 
   it("Should have correct decimals", async function () {
@@ -108,7 +108,8 @@ describe("ERC20 Tests", function () {
     const otherContract = contract.connect(otherAccount);
 
     // Test revert transaction with message
-    await expect( otherContract.transfer(owner, qty) ).to.be.revertedWith("Insufficient balance.");
+    await expect( otherContract.transfer(owner, qty) )
+              .to.be.revertedWithCustomError(contract, "ERC20InsufficientBalance");
   });
 
   it("Should approve and allowance", async function () {
@@ -156,17 +157,6 @@ describe("ERC20 Tests", function () {
     expect(allowance).to.equal(qty);
   });
 
-  it("Should NOT transferFrom (balance)", async function () {
-    const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
-
-    const otherContract = contract.connect(otherAccount);
-
-    // Total coins + 1
-
-    // Test revert transaction with message
-    await expect( otherContract.transferFrom(owner.address, otherAccount.address, (total + 1n) )).to.be.revertedWith("Insufficient balance.");
-  });
-
   it("Should NOT transferFrom (allowance)", async function () {
     const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
 
@@ -176,6 +166,24 @@ describe("ERC20 Tests", function () {
     // Allowance was not called!
 
     // Test revert transaction with message
-    await expect( otherContract.transferFrom(owner.address, otherAccount.address, 1n) ).to.be.revertedWith("Insufficient allowance.");
+    await expect( otherContract.transferFrom(owner.address, otherAccount.address, 1n) )
+              .to.be.revertedWithCustomError(contract, "ERC20InsufficientAllowance");
+  });
+
+   it("Should NOT transferFrom (balance)", async function () {
+    const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
+
+    // Set 
+    const qty = 1n;
+    const otherContract = contract.connect(otherAccount);
+
+    // Approve contract to tranfer
+    await otherContract.approve(owner.address, qty);
+
+    // Test revert transaction with message, because otherAccount balance is 0
+    await expect( contract.transferFrom(otherAccount.address, owner.address, qty))
+              .to.be.revertedWithCustomError(contract, "ERC20InsufficientBalance");
   });
 });
+
+
