@@ -1,4 +1,4 @@
-import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
+import { loadFixture, time } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
@@ -22,7 +22,7 @@ describe("ERC20 Tests", function () {
     return { contract, total, owner, otherAccount };
   }
 
-  // Tests
+  // Token Tests
 
   it("Should have correct name", async function () {
     const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
@@ -183,6 +183,119 @@ describe("ERC20 Tests", function () {
     // Test revert transaction with message, because otherAccount balance is 0
     await expect( contract.transferFrom(otherAccount.address, owner.address, qty))
               .to.be.revertedWithCustomError(contract, "ERC20InsufficientBalance");
+  });
+
+  // Mint tests
+
+  it("Should mint once", async function() {
+    const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
+
+    // Set
+    const mintAmount = 1000n;
+    await contract.setMintAmount(mintAmount);
+
+    const balanceBefore = await contract.balanceOf(otherAccount.address);
+
+    const otherContract = contract.connect(otherAccount);
+    await otherContract.mint(); 
+
+    const balanceAfter = await contract.balanceOf(otherAccount.address);
+
+    // Tests
+    expect(balanceAfter).to.equal(balanceBefore + mintAmount);
+  });
+
+  it("Should mint once (different accounts)", async function() {
+    const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
+
+    // Set
+    const mintAmount = 1000n;
+    await contract.setMintAmount(mintAmount);
+
+    const ownerBalanceBefore = await contract.balanceOf(owner.address);
+    const otherBalanceBefore = await contract.balanceOf(otherAccount.address);
+
+    // Mint owner
+    await contract.mint(); 
+
+    // Mint other
+    const otherContract = contract.connect(otherAccount);
+    await otherContract.mint(); 
+
+    const ownerBalanceAfter = await contract.balanceOf(owner.address);
+    const otherBalanceAfter = await contract.balanceOf(otherAccount.address);
+
+    // Tests
+    expect(ownerBalanceAfter).to.equal(ownerBalanceBefore + mintAmount);
+    expect(otherBalanceAfter).to.equal(otherBalanceBefore + mintAmount);
+  });
+
+  it("Should mint once (different moments)", async function() {
+    const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
+
+    // Set
+    const mintAmount = 1000n;
+    await contract.setMintAmount(mintAmount);
+
+    const ownerBalanceBefore = await contract.balanceOf(owner.address);
+
+    // Mint owner
+    await contract.mint(); 
+
+    // Time lapse
+    const mintDelay = 60 * 60 * 24 + 1; // 1 day in seconds
+    await time.increase(mintDelay + 1); // Added 1 second
+
+    await contract.mint();
+
+    const ownerBalanceAfter = await contract.balanceOf(owner.address);
+
+    // Tests
+    expect(ownerBalanceAfter).to.equal(ownerBalanceBefore + (mintAmount * 2n));
+  });
+
+  it("Should NOT mint", async function() {
+    const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
+   
+     // Test revert transaction with message
+     await expect( contract.mint() ).to.be.revertedWith("Minting is not enabled.");
+  });
+
+  it("Should NOT mint twice", async function() {
+    const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
+
+    // Set
+    const mintAmount = 1000n;
+    await contract.setMintAmount(mintAmount);
+
+    // Mint owner
+    await contract.mint(); 
+    
+    // NO time lapse
+    // Test revert transaction with message
+    await expect( contract.mint() ).to.be.revertedWith("You cannot mint twice in a row.");
+  });  
+
+  it("Should NOT set mint amount", async function() {
+    const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
+
+    // Set
+    const mintAmount = 1000n;
+    const otherContract = contract.connect(otherAccount);
+   
+     // Test revert transaction with message
+     await expect( otherContract.setMintAmount(mintAmount) ).to.be.revertedWith("You do not have permission.");
+  });
+
+  it("Should NOT set mint delay", async function() {
+    const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
+
+    // Set
+    const mintDelay = 1;
+    const otherContract = contract.connect(otherAccount);
+   
+     // Test revert transaction with message
+     await expect( otherContract.setMintDelay(mintDelay) ).to.be.revertedWith("You do not have permission.");
   });
 });
 
