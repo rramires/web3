@@ -43,5 +43,9 @@ npm run deploy_testnet
 
 ```shell
 # npx hardhat verify --network sepolia Your Contract Address 
+# Use apiKey: process.env.ETHSCAN_API in hardhat.config.ts
 npx hardhat verify --network sepolia 0x2e098...etc
+
+# Use apiKey: process.env.BSCSCAN_API in hardhat.config.ts
+npx hardhat verify --network bsctest 0x2e098...etc
 ```

@@ -8,7 +8,8 @@
     "compile": "npx hardhat compile",
     "test": "npx hardhat test",
     "deploy": "npx hardhat run scripts/deploy.ts",
-    "deploy_testnet": "npx hardhat run scripts/deploy.ts --network sepolia"
+    "deploy_testnet": "npx hardhat run scripts/deploy.ts --network sepolia",
+    "deploy_bsc_testnet": "npx hardhat run scripts/deploy.ts --network bsctest"
   },
   "keywords": [],
   "author": "",
