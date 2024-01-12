@@ -1,25 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { mint } from './web3Service'
 
 function App() {
+
+  function onBtnClick(){
+    mint()
+      .then(addr => alert(addr))
+      .catch(err => alert(err.message));
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>      
+      <div className="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <header className="mb-auto">
+          <div>
+            <h3 className="float-md-start mb-0">SampleCoin Faucet</h3>
+            <nav className="nav nav-masthead justify-content-center float-md-end">
+              <a className="nav-link fw-bold py-1 px-0 active" aria-current="page" href="#">Home</a>
+              <a className="nav-link fw-bold py-1 px-0" href="#">About</a>
+            </nav>
+          </div>
+        </header>
+
+        <main className="px-3">
+          <h1>Get your SampleCoins</h1>
+          <p className="lead">Once a daym earn 50 coins for free, just connect your MetaMask or similar wallet below.</p>
+          <p className="lead">
+            <a href="#" onClick={onBtnClick} className="btn btn-lg btn-light fw-bold border-white bg-white">
+              <img id="mm-logo" src="assets/MetaMaskLogo.svg" alt="MetaMask Logo" />
+              Connect to MetaMask
+            </a>
+          </p>
+        </main>
+
+        <footer className="mt-auto text-white-50">
+          <p>Build by <a href="https://flexbr.com/" className="text-white">FlexBr</a></p>
+        </footer>
+      </div>
+    </>
   );
 }
 
