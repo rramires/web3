@@ -110,6 +110,11 @@ body {
   max-width: 42em;
 }
 
+.max-error-message{
+  text-align: center;
+  overflow-wrap: break-word;
+}
+
 #mm-logo{
   width: 38px;
   margin-right: 12px;

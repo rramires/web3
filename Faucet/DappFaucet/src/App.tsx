@@ -1,12 +1,16 @@
+import { useState } from 'react';
 import { mint } from './web3Service'
 
 function App() {
 
+  const [message, setMessage] = useState("");
+
   function onBtnClick(){
+    setMessage("Requesting your tokens, please wait.");
     mint()
       // Retuned transaction hash
-      .then(tx => alert(tx))
-      .catch(err => alert(err.message));
+      .then(tx => setMessage("Your tokens were sent. Tx: " + tx))
+      .catch(err => setMessage(err.message));
   }
 
   return (
@@ -30,6 +34,9 @@ function App() {
               <img id="mm-logo" src="assets/MetaMaskLogo.svg" alt="MetaMask Logo" />
               Connect to MetaMask
             </a>
+          </p>
+          <p className="lead max-error-message">
+            {message}
           </p>
         </main>
 
