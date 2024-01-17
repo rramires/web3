@@ -1,4 +1,7 @@
 import Web3 from "web3";
+import ABI from './abi.json';
+
+const CONTRACT_ADDRESS = `${process.env.REACT_APP_CONTRACT_ADDRESS}`;
 
 export async function mint(){
     // Check
@@ -15,5 +18,14 @@ export async function mint(){
         throw new Error('No account allowed!');
     }
 
-    return accounts[0];
+    // Connect to contract
+    const contract = new web3.eth.Contract(ABI, CONTRACT_ADDRESS, {
+        from: accounts[0]
+    });
+
+    // Call mint
+    const tx = await contract.methods.mint().send();
+
+    // Return transaction
+    return tx.transactionHash;
 }

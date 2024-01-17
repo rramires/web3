@@ -4,7 +4,8 @@ function App() {
 
   function onBtnClick(){
     mint()
-      .then(addr => alert(addr))
+      // Retuned transaction hash
+      .then(tx => alert(tx))
       .catch(err => alert(err.message));
   }
 
