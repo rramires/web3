@@ -2,7 +2,7 @@ import { loadFixture, time } from "@nomicfoundation/hardhat-toolbox/network-help
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-describe("ERC20 Tests", function () {
+describe("BEP20v2 Tests", function () {
   
   async function deployFixture() {
     
@@ -10,7 +10,7 @@ describe("ERC20 Tests", function () {
     const [owner, otherAccount] = await ethers.getSigners();
 
     // Create the contract that will be tested
-    const Contract = await ethers.getContractFactory("BEP20");
+    const Contract = await ethers.getContractFactory("BEP20v2");
 
     // Deploy
     const contract = await Contract.deploy();
@@ -31,7 +31,7 @@ describe("ERC20 Tests", function () {
     const name = await contract.name();
 
     // Test
-    expect(name).to.equal("BEPSample");
+    expect(name).to.equal("BEPSampleV2");
   });
   
   it("Should have correct symbol", async function () {
@@ -41,7 +41,7 @@ describe("ERC20 Tests", function () {
     const symbol = await contract.symbol();
 
     // Test
-    expect(symbol).to.equal("BEPS");
+    expect(symbol).to.equal("BEPS2");
   });
 
   it("Should have correct decimals", async function () {
@@ -196,8 +196,7 @@ describe("ERC20 Tests", function () {
 
     const balanceBefore = await contract.balanceOf(otherAccount.address);
 
-    const otherContract = contract.connect(otherAccount);
-    await otherContract.mint(); 
+    await contract.mint(otherAccount.address); 
 
     const balanceAfter = await contract.balanceOf(otherAccount.address);
 
@@ -216,11 +215,10 @@ describe("ERC20 Tests", function () {
     const otherBalanceBefore = await contract.balanceOf(otherAccount.address);
 
     // Mint owner
-    await contract.mint(); 
+    await contract.mint(owner.address); 
 
     // Mint other
-    const otherContract = contract.connect(otherAccount);
-    await otherContract.mint(); 
+    await contract.mint(otherAccount.address); 
 
     const ownerBalanceAfter = await contract.balanceOf(owner.address);
     const otherBalanceAfter = await contract.balanceOf(otherAccount.address);
@@ -237,18 +235,18 @@ describe("ERC20 Tests", function () {
     const mintAmount = 1000n;
     await contract.setMintAmount(mintAmount);
 
-    const ownerBalanceBefore = await contract.balanceOf(owner.address);
+    const ownerBalanceBefore = await contract.balanceOf(otherAccount.address);
 
     // Mint owner
-    await contract.mint(); 
+    await contract.mint(otherAccount.address); 
 
     // Time lapse
     const mintDelay = 60 * 60 * 24 + 1; // 1 day in seconds
     await time.increase(mintDelay + 1); // Added 1 second
 
-    await contract.mint();
+    await contract.mint(otherAccount.address);
 
-    const ownerBalanceAfter = await contract.balanceOf(owner.address);
+    const ownerBalanceAfter = await contract.balanceOf(otherAccount.address);
 
     // Tests
     expect(ownerBalanceAfter).to.equal(ownerBalanceBefore + (mintAmount * 2n));
@@ -258,7 +256,7 @@ describe("ERC20 Tests", function () {
     const { contract, total, owner, otherAccount } = await loadFixture(deployFixture);
    
      // Test revert transaction with message
-     await expect( contract.mint() ).to.be.revertedWith("Minting is not enabled.");
+     await expect( contract.mint(otherAccount.address) ).to.be.revertedWith("Minting is not enabled.");
   });
 
   it("Should NOT mint twice", async function() {
@@ -269,11 +267,11 @@ describe("ERC20 Tests", function () {
     await contract.setMintAmount(mintAmount);
 
     // Mint owner
-    await contract.mint(); 
+    await contract.mint(otherAccount.address); 
     
     // NO time lapse
     // Test revert transaction with message
-    await expect( contract.mint() ).to.be.revertedWith("You cannot mint twice in a row.");
+    await expect( contract.mint(otherAccount.address) ).to.be.revertedWith("You cannot mint twice in a row.");
   });  
 
   it("Should NOT set mint amount", async function() {

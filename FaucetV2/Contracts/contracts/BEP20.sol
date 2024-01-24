@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 // import "hardhat/console.sol";
 
 // Inheritance in Solidity is done with: "is"
-contract BEP20 is ERC20{
+contract BEP20v2 is ERC20{
 
     // Contract owner
     address private _owner;
@@ -24,7 +24,7 @@ contract BEP20 is ERC20{
 
     // To call the parent's constructor, simply call 
     // the function with the same name: ERC20(args)
-    constructor() ERC20("BEPSample", "BEPS"){
+    constructor() ERC20("BEPSampleV2", "BEPS2"){
 
         // Stores the contract owner
         _owner = msg.sender;
@@ -53,15 +53,15 @@ contract BEP20 is ERC20{
     }
     
     // Mint new tokens
-    function mint() public {
+    function mint(address to) public restricted{
         // Validate
         require(_mintAmount > 0, "Minting is not enabled.");
-        require(block.timestamp > nextMint[msg.sender], "You cannot mint twice in a row.");
+        require(block.timestamp > nextMint[to], "You cannot mint twice in a row.");
 
         // Generate and send tokens
-        _mint(msg.sender, _mintAmount);
+        _mint(to, _mintAmount);
 
         // Add address to delay mapping
-        nextMint[msg.sender] = block.timestamp + _mintDelay;
+        nextMint[to] = block.timestamp + _mintDelay;
     }
 }

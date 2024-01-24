@@ -2,7 +2,7 @@ import { ethers } from "hardhat";
 
 async function main() {
   // Get contract and deploy
-  const contract = await ethers.deployContract("BEP20");
+  const contract = await ethers.deployContract("BEP20v2");
   // Await to finish
   await contract.waitForDeployment();
 
